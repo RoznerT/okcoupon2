@@ -29,6 +29,7 @@ public class AdminController extends ClientController {
     @Autowired
     ApplicationContext ctx;
 
+
     /**
      * Post-Method that indicated if the user that try to log in has the permission to use the system
      * by searching in the dataBase the existence of the data that passed to the Method and by compare the Role
@@ -187,7 +188,7 @@ public class AdminController extends ClientController {
         adminService.addCompany(company);
         return ResponseEntity.accepted()
                 .header("Authorization", jwt.generateToken(validation(token)))
-                .body(null);
+                .body("=]");
     }
 
     /**

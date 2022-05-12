@@ -152,6 +152,7 @@ public class CompanyController extends ClientController {
         if (coupon.validCategory()) {
             throw new unknownCategoryException();
         }
+        coupon.setCompanyName(companyService.getCompanyDetails(validation(token).getId()).getName());
         companyService.addCoupon(coupon);
         return ResponseEntity.accepted()
                 .header("Authorization", jwt.generateToken(validation(token)))
@@ -173,13 +174,16 @@ public class CompanyController extends ClientController {
      */
     @PutMapping("updateCoupon")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> updateCoupon(@RequestHeader(name = "Authorization") String token, @RequestBody Coupon coupon) throws InvalidUserException, CouponNotFoundException, NotFoundException, JWTexpiredException, NoPermissionException, UncompletedFieldsException, unknownCategoryException {
+    public ResponseEntity<?> updateCoupon(@RequestHeader(name = "Authorization") String token, @RequestBody Coupon coupon) throws InvalidUserException, CouponNotFoundException, NotFoundException, JWTexpiredException, NoPermissionException, UncompletedFieldsException, unknownCategoryException, UpdateNameException {
         if (validation(token).getId() != companyService.getOneCoupon(coupon.getId()).getCompany().getId()) {
             throw new NoPermissionException();
         }
         coupon.setCompany(companyService.getCompanyDetails(validation(token).getId()));
         if (coupon.unCompleteFields()){
             throw new UncompletedFieldsException();
+        }
+        if (!coupon.getCompanyName().equalsIgnoreCase(companyService.getOneCoupon(coupon.getId()).getCompanyName())){
+            throw new UpdateNameException();
         }
         if (coupon.validCategory()){
             throw new unknownCategoryException();

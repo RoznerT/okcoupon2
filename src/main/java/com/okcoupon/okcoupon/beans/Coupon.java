@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.swing.text.View;
 import java.sql.Date;
 import java.util.*;
 
@@ -29,6 +30,9 @@ public class Coupon {
     @ManyToOne
     @JsonIgnore
     Company company;
+    @JsonView(Views.Internal.class)
+    @Column(nullable = false, length= 40)
+    private String companyName;
     @Column(nullable = false, length = 40)
     @JsonView(Views.Public.class)
     private Category category;
@@ -57,9 +61,10 @@ public class Coupon {
     @OneToMany(mappedBy = "coupon", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Set<Purchase> purchases = new HashSet<>();
 
-    public Coupon(int id, Company company, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
+    public Coupon(int id, Company company,String companyName, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
         this.id = id;
         this.company = company;
+        this.companyName = companyName;
         this.category = category;
         this.title = title;
         this.description = description;
@@ -70,8 +75,9 @@ public class Coupon {
         this.image = image;
     }
 
-    public Coupon(Company company, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
+    public Coupon(Company company,String companyName, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
         this.company = company;
+        this.companyName = companyName;
         this.category = category;
         this.title = title;
         this.description = description;
@@ -80,6 +86,14 @@ public class Coupon {
         this.amount = amount;
         this.price = price;
         this.image = image;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
     /**

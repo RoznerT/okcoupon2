@@ -202,6 +202,7 @@ public class AdminService {
                     new Coupon(
                             purchase.getCoupon().getId(),
                             purchase.getCoupon().getCompany(),
+                            purchase.getCoupon().getCompanyName(),
                             purchase.getCoupon().getCategory(),
                             purchase.getCoupon().getTitle(),
                             purchase.getCoupon().getDescription(),

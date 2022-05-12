@@ -81,6 +81,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(hyundai)
+            .companyName(hyundai.getName())
             .build();
 
 
@@ -94,6 +95,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(hyundai)
+            .companyName(hyundai.getName())
             .build();
 
     public Coupon sony = Coupon.builder()
@@ -106,6 +108,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(4)
             .company(gucci)
+            .companyName(gucci.getName())
             .build();
 
     public Coupon totto = Coupon.builder()
@@ -118,6 +121,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(hyundai)
+            .companyName(hyundai.getName())
             .build();
 
     public Coupon skiDeal = Coupon.builder()
@@ -130,6 +134,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(hyundai)
+            .companyName(hyundai.getName())
             .build();
 
     public Coupon cinemacity = Coupon.builder()
@@ -142,6 +147,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(hyundai)
+            .companyName(hyundai.getName())
             .build();
 
     public Coupon musicPerformanceClub = Coupon.builder()
@@ -154,6 +160,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(gucci)
+            .companyName(gucci.getName())
             .build();
 
     public Coupon tatooMania = Coupon.builder()
@@ -166,6 +173,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(gucci)
+            .companyName(gucci.getName())
             .build();
 
     public Coupon gymBoxer = Coupon.builder()
@@ -178,6 +186,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(ibm)
+            .companyName(ibm.getName())
             .build();
 
     public Coupon hairForYou = Coupon.builder()
@@ -190,6 +199,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(ibm)
+            .companyName(ibm.getName())
             .build();
 
     public Coupon led = Coupon.builder()
@@ -202,6 +212,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(gucci)
+            .companyName(gucci.getName())
             .build();
 
     public Coupon steakHouse = Coupon.builder()
@@ -214,6 +225,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(gucci)
+            .companyName(gucci.getName())
             .build();
 
     public Coupon romanticVacation = Coupon.builder()
@@ -226,6 +238,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(ibm)
+            .companyName(ibm.getName())
             .build();
 
     public Coupon vacationInTheCity = Coupon.builder()
@@ -238,6 +251,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(facebook)
+            .companyName(facebook.getName())
             .build();
 
     public Coupon shoesMania = Coupon.builder()
@@ -250,6 +264,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(facebook)
+            .companyName(facebook.getName())
             .build();
 
     public Coupon electra = Coupon.builder()
@@ -262,6 +277,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(ibm)
+            .companyName(ibm.getName())
             .build();
 
     public Coupon jimbori = Coupon.builder()
@@ -274,6 +290,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(facebook)
+            .companyName(facebook.getName())
             .build();
 
     public Coupon weRun = Coupon.builder()
@@ -286,6 +303,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(google)
+            .companyName(google.getName())
             .build();
 
     public Coupon luxuryWatches = Coupon.builder()
@@ -298,6 +316,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(google)
+            .companyName(google.getName())
             .build();
 
     public Coupon tripAdvice = Coupon.builder()
@@ -310,6 +329,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(google)
+            .companyName(google.getName())
             .build();
 
     public Coupon chocolateFactory = Coupon.builder()
@@ -322,6 +342,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(ibm)
+            .companyName(ibm.getName())
             .build();
 
     public Coupon wineAndFINE = Coupon.builder()
@@ -334,6 +355,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(facebook)
+            .companyName(facebook.getName())
             .build();
 
     public Coupon noaORmergi = Coupon.builder()
@@ -346,6 +368,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(google)
+            .companyName(google.getName())
             .build();
 
     public Coupon socks4U = Coupon.builder()
@@ -358,6 +381,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(google)
+            .companyName(google.getName())
             .build();
 
     public Coupon noSecond = Coupon.builder()
@@ -370,6 +394,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(google)
+            .companyName(google.getName())
             .build();
 
     public Coupon expiredCoupon = Coupon.builder()
@@ -382,6 +407,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(amountSetter())
             .company(google)
+            .companyName(google.getName())
             .build();
 
     public Coupon noAmountCoupon = Coupon.builder()
@@ -394,6 +420,7 @@ public class mockDataBuilder implements CommandLineRunner {
             .image(":)))")
             .amount(0)
             .company(google)
+            .companyName(google.getName())
             .build();
 
     ///customers///
