@@ -36,7 +36,7 @@ public class CustomerController extends ClientController {
      * @throws UnknownRoleException thrown when passed role that doesn't exist in the system
      */
     @Override
-    @PostMapping("Login")
+    @PostMapping("/Login")
     public ResponseEntity<?> login(@RequestBody UserDetails user) throws InvalidUserException, UncompletedFieldsException, UnknownRoleException {
         if (user.unCompleteFields()){
             throw new UncompletedFieldsException();
@@ -70,7 +70,7 @@ public class CustomerController extends ClientController {
      * @throws NotFoundException thrown when user sends an invalid-coupon-id that doesn't exist in the system
      * @throws JWTexpiredException thrown when the Token has expired
      */
-    @PostMapping("newPurchase/{couponId}")
+    @PostMapping("/newPurchase/{couponId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> purchaseCoupon(@RequestHeader(name = "Authorization") String token, @PathVariable int couponId) throws NoCouponsLeftException, SamePurchaseException, ExpiredCouponException, InvalidUserException, NotFoundException, JWTexpiredException {
         customerService.purchaseCoupon(customerService.getCustomerDetails(validation(token).getId()), couponId);
@@ -87,7 +87,7 @@ public class CustomerController extends ClientController {
      * @throws JWTexpiredException thrown when the Token has expired
      * @throws NoCouponPurchasesException thrown when there are no coupons for this company in the system
      */
-    @GetMapping("allCouponsCustomer")
+    @GetMapping("/allCouponsCustomer")
     public ResponseEntity<?> getAllCoupons(@RequestHeader(name = "Authorization") String token) throws InvalidUserException, JWTexpiredException, NoCouponPurchasesException {
         return ResponseEntity.ok()
                 .header("Authorization", jwt.generateToken(validation(token)))
@@ -104,7 +104,7 @@ public class CustomerController extends ClientController {
      * @throws JWTexpiredException thrown when the Token has expired
      * @throws NoCouponPurchasesException thrown when there are no coupons for this customer in the system
      */
-    @GetMapping("CustomerCouponsByCategory{category}")
+    @GetMapping("/CustomerCouponsByCategory{category}")
     public ResponseEntity<?> getCouponsByCategory(@RequestHeader(name = "Authorization") String token, @PathVariable Category category) throws InvalidUserException, NoCouponsCategoryException, JWTexpiredException, NoCouponPurchasesException {
         return ResponseEntity.ok()
                 .header("Authorization", jwt.generateToken(validation(token)))
@@ -122,7 +122,7 @@ public class CustomerController extends ClientController {
      * @throws JWTexpiredException thrown when the Token has expired
      * @throws NoCouponPurchasesException thrown when there are no coupons for this company in the system
      */
-    @GetMapping("CustomerCouponsByPrice{price}")
+    @GetMapping("/CustomerCouponsByPrice{price}")
     public ResponseEntity<?> getCouponsByMaxPrice(@RequestHeader(name = "Authorization") String token, @PathVariable double price) throws InvalidUserException, NoCouponsPriceException, JWTexpiredException, NoCouponPurchasesException {
         return ResponseEntity.ok()
                 .header("Authorization", jwt.generateToken(validation(token)))
@@ -138,7 +138,7 @@ public class CustomerController extends ClientController {
      * @throws NotFoundException thrown when user sends an invalid-id that doesn't exist in the system
      * @throws JWTexpiredException thrown when the Token has expired
      */
-    @GetMapping("customerDetails")
+    @GetMapping("/customerDetails")
     @JsonView(Views.Public.class)
     public ResponseEntity<?> getCustomerDetails(@RequestHeader(name = "Authorization") String token) throws InvalidUserException, JWTexpiredException, NotFoundException {
         return ResponseEntity.ok()
@@ -151,7 +151,7 @@ public class CustomerController extends ClientController {
      * @return ResponseEntity with unique Token sends via the header part, also The HttpStatus which is 200-OK
      * The List of the coupons passed throw the body part
      */
-    @GetMapping("allCouponsInSystem")
+    @GetMapping("/allCouponsInSystem")
     public ResponseEntity<?> getAllCouponsInSystem() {
         return new ResponseEntity<>(customerService.getAllCouponsInSystem(),HttpStatus.ACCEPTED);
     }

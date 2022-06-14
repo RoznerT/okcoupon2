@@ -57,7 +57,7 @@ public class CompanyRestTemplate implements CommandLineRunner {
 
     private void login(UserDetails userDetails) {
         try {
-            ResponseEntity<Void> object = restTemplate.exchange(loginUrl, HttpMethod.POST, new HttpEntity<>(userDetails), void.class);
+            ResponseEntity<?> object = restTemplate.exchange(loginUrl, HttpMethod.POST, new HttpEntity<>(userDetails), void.class);
 
             if (object.getStatusCode().is4xxClientError()) {
                 throw new ClientErrorException("Client error:" + object.getStatusCode().name());
@@ -144,13 +144,14 @@ public class CompanyRestTemplate implements CommandLineRunner {
     private Company getCompanyDetails() throws ClientErrorException, ServerErrorException {
         try {
             ResponseEntity<Company> getCompanyDetails = restTemplate.exchange(companyDetailsUrl, HttpMethod.GET, getHttpEntity(this.token, null), Company.class);
-            System.out.println(ConsoleColors.CYAN + "company details through restTemplate\n" + getCompanyDetails + ConsoleColors.RESET);
             if (getCompanyDetails.getStatusCode().is4xxClientError()) {
                 throw new ClientErrorException("Client error:" + getCompanyDetails.getStatusCode().name());
             }
             if (getCompanyDetails.getStatusCode().is5xxServerError()) {
                 throw new ServerErrorException("Server error:" + getCompanyDetails.getStatusCode().name());
             }
+            Company company = getCompanyDetails.getBody();
+            System.out.println(ConsoleColors.PURPLE_BRIGHT + "company details through restTemplate\n" + company + ConsoleColors.RESET);
             updateToken(getCompanyDetails);
             return getCompanyDetails.getBody();
         } catch (ServerErrorException | ClientErrorException error) {
@@ -161,7 +162,7 @@ public class CompanyRestTemplate implements CommandLineRunner {
 
     private void addCoupon(Coupon coupon) {
         try {
-            ResponseEntity<Void> object = restTemplate.exchange(newCouponUrl, HttpMethod.POST, getHttpEntity(this.token, coupon), void.class);
+            ResponseEntity<?> object = restTemplate.exchange(newCouponUrl, HttpMethod.POST, getHttpEntity(this.token, coupon), void.class);
             if (object.getStatusCode().is5xxServerError()) {
                 throw new ServerErrorException("Server error:" + object.getStatusCode().name());
             }
@@ -177,7 +178,7 @@ public class CompanyRestTemplate implements CommandLineRunner {
 
     private void updateCoupon(Coupon coupon) {
         try {
-            ResponseEntity<Void> object = restTemplate.exchange(updateCouponUrl, HttpMethod.PUT, getHttpEntity(this.token, coupon), void.class);
+            ResponseEntity<?> object = restTemplate.exchange(updateCouponUrl, HttpMethod.PUT, getHttpEntity(this.token, coupon), void.class);
             if (object.getStatusCode().is5xxServerError()) {
                 throw new ServerErrorException("Server error:" + object.getStatusCode().name());
             }
@@ -196,7 +197,7 @@ public class CompanyRestTemplate implements CommandLineRunner {
         try {
             Map<String, String> param = new HashMap<>();
             param.put("id", String.valueOf(id));
-            ResponseEntity<Void> object = restTemplate.exchange(deleteCouponUrl, HttpMethod.DELETE, getHttpEntity(this.token, null), void.class, param);
+            ResponseEntity<?> object = restTemplate.exchange(deleteCouponUrl, HttpMethod.DELETE, getHttpEntity(this.token, null), void.class, param);
             if (object.getStatusCode().is5xxServerError()) {
                 throw new ServerErrorException("Server error:" + object.getStatusCode().name());
             }

@@ -57,7 +57,7 @@ public class CustomerRestTemplate implements CommandLineRunner {
 
     private void login(UserDetails userDetails) {
         try {
-            ResponseEntity<Void> object = restTemplate.exchange(login, HttpMethod.POST, new HttpEntity<>(userDetails), void.class);
+            ResponseEntity<?> object = restTemplate.exchange(login, HttpMethod.POST, new HttpEntity<>(userDetails), void.class);
             if (object.getStatusCode().is4xxClientError()) {
                 throw new ClientErrorException(ConsoleColors.RED + "Client error:" + object.getStatusCode().name() + ConsoleColors.RESET);
             }
@@ -215,7 +215,7 @@ public class CustomerRestTemplate implements CommandLineRunner {
         }
 
         try {
-            couponsByCategory(Category.VACATION);
+            couponsByCategory(Category.ELECTRICITY);
         } catch (Exception error) {
             System.out.println(error.getMessage());
         }

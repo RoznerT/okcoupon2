@@ -2,7 +2,11 @@ package com.okcoupon.okcoupon.repositories;
 
 import com.okcoupon.okcoupon.beans.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface CompanyRepo extends JpaRepository<Company, Integer> {
@@ -56,4 +60,9 @@ public interface CompanyRepo extends JpaRepository<Company, Integer> {
      * @return  an instance of Company.Class initialized by the values of all fields of the required record
      */
     Company getByName(String name);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM okcoupon2.companies u WHERE u.id = :id", nativeQuery = true)
+    void deleteById(@Param("id") int companyId);
 }

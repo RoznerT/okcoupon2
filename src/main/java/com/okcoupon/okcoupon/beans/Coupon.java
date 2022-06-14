@@ -32,6 +32,7 @@ public class Coupon {
     Company company;
     @JsonView(Views.Internal.class)
     @Column(nullable = false, length= 40)
+    @JsonIgnore
     private String companyName;
     @Column(nullable = false, length = 40)
     @JsonView(Views.Public.class)

@@ -281,4 +281,10 @@ public class CouponSystemAdvise {
     public ErrorDetail jsonParseException(Exception err){
         return new ErrorDetail("Bad input!", "please check the content and verify all fields written properly with write punctuation");
     }
+
+    @ExceptionHandler(value = {JWTexpiredException.class})
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public ErrorDetail jwtExpiredException(Exception err){
+        return new ErrorDetail("Error with Token ", err.getMessage());
+    }
 }

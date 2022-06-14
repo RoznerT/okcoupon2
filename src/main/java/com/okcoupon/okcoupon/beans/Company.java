@@ -38,7 +38,7 @@ public class Company {
     @JsonView(Views.Internal.class)
     private String password;
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "company")
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "company")
     private Collection<Coupon> coupons = new HashSet<>();
 
     /**
@@ -143,7 +143,7 @@ public class Company {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Company company = (Company) o;
-        return id == company.id && Objects.equals(name, company.name) && Objects.equals(email, company.email) && Objects.equals(password, company.password) && Objects.equals(coupons, company.coupons);
+        return id == company.id && Objects.equals(name, company.name) && Objects.equals(email, company.email) && Objects.equals(password, company.password);
     }
 
     /**
@@ -152,7 +152,7 @@ public class Company {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, email, password, coupons);
+        return Objects.hash(id, name, email, password);
     }
 
     /**

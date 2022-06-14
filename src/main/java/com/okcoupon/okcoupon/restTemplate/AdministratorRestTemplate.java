@@ -28,24 +28,28 @@ public class AdministratorRestTemplate implements CommandLineRunner {
 
     private String token;
 
-    final static String login = "http://localhost:8080/administrator/Login";
-    final static String allCompanies = "http://localhost:8080/administrator/allCompanies";
-    final static String allCustomers = "http://localhost:8080/administrator/allCustomers";
-    final static String getCompany = "http://localhost:8080/administrator/getCompany/{id}";
-    final static String getCustomer = "http://localhost:8080/administrator/getCustomer/{id}";
-    final static String companyCoupons = "http://localhost:8080/administrator/getCompanyCoupons/{id}";
-    final static String customerCoupons = "http://localhost:8080/administrator/getCustomerPurchase/{id}";
-    final static String newCompany = "http://localhost:8080/administrator/newCompany";
-    final static String newCustomer = "http://localhost:8080/administrator/newCustomer";
-    final static String updateCompany = "http://localhost:8080/administrator/updateCompany";
-    final static String updateCustomer = "http://localhost:8080/administrator/updateCustomer";
-    final static String deleteCompany = "http://localhost:8080/administrator/deleteCompany/{id}";
-    final static String deleteCustomer = "http://localhost:8080/administrator/deleteCustomer/{id}";
+    //private static final String HEADER = "Authorization:Bearer";
+    private static final String HEADER_RESU = "Authorization";
+
+
+    private final static String login = "http://localhost:8080/administrator/Login";
+    private final static String allCompanies = "http://localhost:8080/administrator/allCompanies";
+    private final static String allCustomers = "http://localhost:8080/administrator/allCustomers";
+    private final static String getCompany = "http://localhost:8080/administrator/getCompany/{id}";
+    private final static String getCustomer = "http://localhost:8080/administrator/getCustomer/{id}";
+    private final static String companyCoupons = "http://localhost:8080/administrator/getCompanyCoupons/{id}";
+    private final static String customerCoupons = "http://localhost:8080/administrator/getCustomerPurchase/{id}";
+    private final static String newCompany = "http://localhost:8080/administrator/newCompany";
+    private final static String newCustomer = "http://localhost:8080/administrator/newCustomer";
+    private final static String updateCompany = "http://localhost:8080/administrator/updateCompany";
+    private final static String updateCustomer = "http://localhost:8080/administrator/updateCustomer";
+    private final static String deleteCompany = "http://localhost:8080/administrator/deleteCompany/{id}";
+    private final static String deleteCustomer = "http://localhost:8080/administrator/deleteCustomer/{id}";
 
     private HttpEntity<?> getHttpEntity(String token, Object companyOrCustomer) {
         HttpEntity<?> httpEntity;
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("Authorization", this.token);
+        httpHeaders.set(HEADER_RESU, this.token);
         if (companyOrCustomer instanceof Company || companyOrCustomer instanceof Customer) {
             httpEntity = new HttpEntity<>(companyOrCustomer, httpHeaders);
         } else httpEntity = new HttpEntity<>(httpHeaders);
@@ -53,23 +57,28 @@ public class AdministratorRestTemplate implements CommandLineRunner {
     }
 
     private void updateToken(ResponseEntity<?> responseEntity){
-        String responseTokenHeader = responseEntity.getHeaders().getFirst("Authorization");
-        if (responseTokenHeader != null && responseTokenHeader.startsWith("Bearer")) {
-            this.token = responseTokenHeader.substring(7);
+        String responseTokenHeader = responseEntity.getHeaders().getFirst(HEADER_RESU);
+        if (responseTokenHeader != null ) {
+            System.out.println(responseTokenHeader);
+            //String newToken = responseTokenHeader.substring(8,219);
+            this.token = responseTokenHeader;
         }
     }
 
 
     private void login(UserDetails userDetails) {
         try {
-            ResponseEntity<Void> object = restTemplate.exchange(login, HttpMethod.POST, new HttpEntity<>(userDetails), void.class);
+            ResponseEntity<?> object = restTemplate.exchange(login, HttpMethod.POST, new HttpEntity<>(userDetails), void.class);
             if (object.getStatusCode().is4xxClientError()) {
                 throw new ClientErrorException(ConsoleColors.RED + "Client error:" + object.getStatusCode().name() + ConsoleColors.RESET);
             }
             if (object.getStatusCode().is5xxServerError()) {
                 throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
             }
-            this.token= object.getHeaders().getFirst("Authorization");
+            String token =object.getHeaders().getFirst(HEADER_RESU);
+            //String newToken = token.substring(8,219);
+            this.token= token;
+
             System.out.println(ConsoleColors.PURPLE_BACKGROUND + userDetails.getUserName() + " logged through restTemplate " + LocalDate.now() + "\nThe token: " + token + ConsoleColors.RESET);
         } catch (ServerErrorException | ClientErrorException error) {
             System.out.println(error.getMessage());
@@ -208,15 +217,15 @@ public class AdministratorRestTemplate implements CommandLineRunner {
 
     private void addCompany(Company company) {
         try {
-            ResponseEntity<Void> object = restTemplate.exchange(newCompany, HttpMethod.POST, getHttpEntity(this.token, company), void.class);
-            if (object.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
+            ResponseEntity<?> response = restTemplate.exchange(newCompany, HttpMethod.POST, getHttpEntity(this.token, company), void.class);
+            if (response.getStatusCode().is5xxServerError()) {
+                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + response.getStatusCode().name() + ConsoleColors.RESET);
             }
-            if (object.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + object.getStatusCode().name() + ConsoleColors.RESET);
+            if (response.getStatusCode().is4xxClientError()) {
+                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + response.getStatusCode().name() + ConsoleColors.RESET);
             }
             System.out.println(ConsoleColors.BLUE + company + "added successfully through restTemplate" + ConsoleColors.RESET);
-            updateToken(object);
+            updateToken(response);
         } catch (ServerErrorException | ClientErrorException error) {
             System.out.println(error.getMessage());
         }
@@ -224,7 +233,7 @@ public class AdministratorRestTemplate implements CommandLineRunner {
 
     private void addCustomer(Customer customer) {
         try {
-            ResponseEntity<Void> object = restTemplate.exchange(newCustomer, HttpMethod.POST, getHttpEntity(this.token, customer), void.class);
+            ResponseEntity<?> object = restTemplate.exchange(newCustomer, HttpMethod.POST, getHttpEntity(this.token, customer), void.class);
             if (object.getStatusCode().is5xxServerError()) {
                 throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
             }
@@ -240,7 +249,7 @@ public class AdministratorRestTemplate implements CommandLineRunner {
 
     private void updateCompany(Company company) {
         try {
-            ResponseEntity<Void> object = restTemplate.exchange(updateCompany, HttpMethod.PUT, getHttpEntity(this.token, company), void.class);
+            ResponseEntity<?> object = restTemplate.exchange(updateCompany, HttpMethod.PUT, getHttpEntity(this.token, company), void.class);
             if (object.getStatusCode().is5xxServerError()) {
                 throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
             }
@@ -256,7 +265,7 @@ public class AdministratorRestTemplate implements CommandLineRunner {
 
     private void updateCustomer(Customer customer) {
         try {
-            ResponseEntity<Void> object = restTemplate.exchange(updateCustomer, HttpMethod.PUT, getHttpEntity(this.token, customer), void.class);
+            ResponseEntity<?> object = restTemplate.exchange(updateCustomer, HttpMethod.PUT, getHttpEntity(this.token, customer), void.class);
             if (object.getStatusCode().is5xxServerError()) {
                 throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
             }
@@ -274,7 +283,7 @@ public class AdministratorRestTemplate implements CommandLineRunner {
         try {
             Map<String, String> param = new HashMap<>();
             param.put("id", String.valueOf(id));
-            ResponseEntity<Void> object = restTemplate.exchange(deleteCompany, HttpMethod.DELETE, getHttpEntity(this.token, null), void.class, param);
+            ResponseEntity<?> object = restTemplate.exchange(deleteCompany, HttpMethod.DELETE, getHttpEntity(this.token, null), void.class, param);
             if (object.getStatusCode().is5xxServerError()) {
                 throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
             }
@@ -292,7 +301,7 @@ public class AdministratorRestTemplate implements CommandLineRunner {
         try {
             Map<String, String> param = new HashMap<>();
             param.put("id", String.valueOf(id));
-            ResponseEntity<Void> object = restTemplate.exchange(deleteCustomer, HttpMethod.DELETE, getHttpEntity(this.token, null), void.class, param);
+            ResponseEntity<?> object = restTemplate.exchange(deleteCustomer, HttpMethod.DELETE, getHttpEntity(this.token, null), void.class, param);
             if (object.getStatusCode().is5xxServerError()) {
                 throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
             }
@@ -343,7 +352,8 @@ public class AdministratorRestTemplate implements CommandLineRunner {
         }
 
         try {
-            addCompany(Company.builder().email("taltul@gmailcom").name("tal").password("oliver&nala").build());
+            //todo: getting an error of JSON parse because unexpected character =
+            addCompany(Company.builder().email("taltul@gmail.com").name("tal").password("0000").build());
         } catch (Exception error) {
             System.out.println(error.getMessage());
         }
@@ -371,13 +381,13 @@ public class AdministratorRestTemplate implements CommandLineRunner {
         } catch (Exception error) {
             System.out.println(error.getMessage());
         }
-
+/*
         try {
             deleteCompany(6);
         } catch (Exception error) {
             System.out.println(error.getMessage());
         }
-
+*/
         try {
             deleteCustomer(6);
         } catch (Exception error) {

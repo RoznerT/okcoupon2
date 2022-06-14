@@ -83,7 +83,10 @@ public class AdminService {
      */
     public void deleteCompany(int companyId) throws NotFoundException {
         if (companyRepo.existsById(companyId)) {
+            List<Coupon> coupons = couponRepo.findByCompanyId(companyId);
             companyRepo.deleteById(companyId);
+            couponRepo.deleteByCompanyId(companyId);
+            coupons.forEach(coupon -> purchaseRepo.deleteByCouponId(coupon.getId()));
         } else throw new NotFoundException();
     }
     /**

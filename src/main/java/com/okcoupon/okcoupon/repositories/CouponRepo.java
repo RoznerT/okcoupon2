@@ -13,6 +13,8 @@ import java.util.List;
 
 @Repository
 public interface CouponRepo extends JpaRepository<Coupon, Integer> {
+
+    List<Coupon> findByPriceLessThan(double price);
     /**
      * send a query to the dataBase and to get a List of records-Coupon objects in Coupons.Table
      * with the companyId and the Category the user send as parameters
@@ -65,6 +67,12 @@ public interface CouponRepo extends JpaRepository<Coupon, Integer> {
     @Modifying
     @Query(value = "DELETE FROM okcoupon2.coupons u WHERE u.id = :id", nativeQuery = true)
     void deleteById(@Param("id") int couponId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM okcoupon2.coupons u WHERE u.company_id = :company_id", nativeQuery = true)
+    void deleteByCompanyId(@Param("company_id") int companyId);
+
 
     /**
      * send a DELETE type query to delete a set of records in Coupons.Table

@@ -9,6 +9,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
+
 @Configuration
 //@EnableWebMvc
 public class CORSconfig{
@@ -28,6 +30,8 @@ public class CORSconfig{
         config.setAllowCredentials(true);
         //allow to get from any ip/domain
         config.addAllowedOriginPattern("*");
+        //expose authorization header
+        config.setExposedHeaders(List.of("Authorization"));
         //allow to get any header
         config.addAllowedHeader("*");
         //tell which VERB is allowed

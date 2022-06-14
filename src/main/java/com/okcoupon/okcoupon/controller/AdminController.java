@@ -29,6 +29,8 @@ public class AdminController extends ClientController {
     @Autowired
     ApplicationContext ctx;
 
+     private static final String HEADER = "Authorization";
+
 
     /**
      * Post-Method that indicated if the user that try to log in has the permission to use the system
@@ -40,7 +42,7 @@ public class AdminController extends ClientController {
      * @throws UnknownRoleException thrown when passed role that doesn't exist in the system
      */
     @Override
-    @PostMapping("Login")
+    @PostMapping("/Login")
     public ResponseEntity<?> login(@RequestBody UserDetails user) throws InvalidUserException, UncompletedFieldsException, UnknownRoleException {
         if (user.unCompleteFields()) {
             throw new UncompletedFieldsException();
@@ -54,8 +56,8 @@ public class AdminController extends ClientController {
             throw new InvalidUserException();
         }
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(userAdmin))
-                .body( jwt.generateToken(userAdmin));
+                .header(HEADER, jwt.generateToken(userAdmin))
+                .body(null);
     }
 
     /**
@@ -67,14 +69,14 @@ public class AdminController extends ClientController {
      * @throws JWTexpiredException thrown when the Token has expired
      * @throws NoCompaniesException thrown when there are no companies in the system
      */
-    @GetMapping("allCompanies")
+    @GetMapping("/allCompanies")
     @JsonView(Views.Public.class)
-    public ResponseEntity<?> getAllCompanies(@RequestHeader(name = "Authorization") String token) throws
+    public ResponseEntity<?> getAllCompanies(@RequestHeader(name = HEADER) String token) throws
             InvalidUserException, JWTexpiredException, NoCompaniesException {
         validation(token);
         UserDetails userDetails = validation(token);
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(userDetails))
+                .header(HEADER, jwt.generateToken(userDetails))
                 .body(adminService.getAllCompanies());
     }
     /**
@@ -86,12 +88,12 @@ public class AdminController extends ClientController {
      * @throws JWTexpiredException thrown when the Token has expired
      * @throws NoCustomersException thrown when there are no customers in the system
      */
-    @GetMapping("allCustomers")
+    @GetMapping("/allCustomers")
     @JsonView(Views.Public.class)
-    public ResponseEntity<?> getAllCustomers(@RequestHeader(name = "Authorization") String token) throws
+    public ResponseEntity<?> getAllCustomers(@RequestHeader(name = HEADER) String token) throws
             InvalidUserException, JWTexpiredException, NoCustomersException {
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(adminService.getAllCustomers());
     }
     /**
@@ -105,12 +107,12 @@ public class AdminController extends ClientController {
      * @throws NoCompaniesException thrown when there are no companies in the system
      * @throws NotFoundException thrown when user sends an invalid-id that doesn't exist in the system
      */
-    @GetMapping("getCompany/{id}")
+    @GetMapping("/getCompany/{id}")
     @JsonView(Views.Public.class)
-    public ResponseEntity<?> getOneCompany(@RequestHeader(name = "Authorization") String token, @PathVariable int id) throws
+    public ResponseEntity<?> getOneCompany(@RequestHeader(name = HEADER) String token, @PathVariable int id) throws
             NotFoundException, InvalidUserException, JWTexpiredException, NoCompaniesException {
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(adminService.getOneCompany(id));
     }
     /**
@@ -124,12 +126,12 @@ public class AdminController extends ClientController {
      * @throws NoCustomersException thrown when there are no customers in the system
      * @throws NotFoundException thrown when user sends an invalid-id that doesn't exist in the system
      */
-    @GetMapping("getCustomer/{id}")
+    @GetMapping("/getCustomer/{id}")
     @JsonView(Views.Public.class)
-    public ResponseEntity<?> getOneCustomer(@RequestHeader(name = "Authorization") String token,
+    public ResponseEntity<?> getOneCustomer(@RequestHeader(name = HEADER) String token,
                                             @PathVariable int id) throws NotFoundException, InvalidUserException, JWTexpiredException, NoCustomersException {
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(adminService.getOneCustomer(id));
     }
 
@@ -143,10 +145,10 @@ public class AdminController extends ClientController {
      * @throws JWTexpiredException thrown when the Token has expired
      * @throws NotFoundException thrown when user sends an invalid-id that doesn't exist in the system
      */
-    @GetMapping("getCompanyCoupons/{id}")
-    public ResponseEntity<?> getCompanyCoupons(@RequestHeader(name = "Authorization") String token, @PathVariable int id) throws InvalidUserException, JWTexpiredException, NotFoundException {
+    @GetMapping("/getCompanyCoupons/{id}")
+    public ResponseEntity<?> getCompanyCoupons(@RequestHeader(name = HEADER) String token, @PathVariable int id) throws InvalidUserException, JWTexpiredException, NotFoundException {
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(adminService.getCompanyCoupons(id));
     }
     /**
@@ -159,10 +161,10 @@ public class AdminController extends ClientController {
      * @throws JWTexpiredException thrown when the Token has expired
      * @throws NoCouponPurchasesException thrown when the customer has no purchases
      */
-    @GetMapping("getCustomerPurchase/{id}")
-    public ResponseEntity<?> getCustomerPurchase(@RequestHeader(name = "Authorization") String token, @PathVariable int id) throws InvalidUserException, JWTexpiredException, NoCouponPurchasesException {
+    @GetMapping("/getCustomerPurchase/{id}")
+    public ResponseEntity<?> getCustomerPurchase(@RequestHeader(name = HEADER) String token, @PathVariable int id) throws InvalidUserException, JWTexpiredException, NoCouponPurchasesException {
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(adminService.getCustomerCoupons(id));
     }
 
@@ -178,17 +180,17 @@ public class AdminController extends ClientController {
      * @throws JWTexpiredException thrown when the Token has expired
      * @throws UncompletedFieldsException thrown when passed company-object that missing some part/field
      */
-    @PostMapping("newCompany")
+    @PostMapping("/newCompany")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> addCompany(@RequestHeader(name = "Authorization") String token, @RequestBody Company company) throws
+    public ResponseEntity<?> addCompany(@RequestHeader(name = HEADER) String token, @RequestBody Company company) throws
             DuplicateItemException, DuplicateNameException, DuplicateEmailException, InvalidUserException, JWTexpiredException, UncompletedFieldsException {
         if (company.unCompleteFields()) {
             throw new UncompletedFieldsException();
         }
         adminService.addCompany(company);
         return ResponseEntity.accepted()
-                .header("Authorization", jwt.generateToken(validation(token)))
-                .body("=]");
+                .header(HEADER, jwt.generateToken(validation(token)))
+                .body(null);
     }
 
     /**
@@ -201,16 +203,16 @@ public class AdminController extends ClientController {
      * @throws JWTexpiredException thrown when the Token has expired
      * @throws UncompletedFieldsException thrown when passed customer-object that missing some part/field
      */
-    @PostMapping("newCustomer")
+    @PostMapping("/newCustomer")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> addCustomer(@RequestHeader(name = "Authorization") String token, @RequestBody Customer customer) throws
+    public ResponseEntity<?> addCustomer(@RequestHeader(name = HEADER) String token, @RequestBody Customer customer) throws
             DuplicateItemException, InvalidUserException, JWTexpiredException, UncompletedFieldsException {
         if (customer.unCompleteFields()) {
             throw new UncompletedFieldsException();
         }
         adminService.addCustomer(customer);
         return ResponseEntity.accepted()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(null);
     }
 
@@ -225,9 +227,9 @@ public class AdminController extends ClientController {
      * @throws UpdateNameException thrown when the user try to update the name of the company
      * @throws UncompletedFieldsException thrown when passed company-object that missing some part/field
      */
-    @PutMapping("updateCompany")
+    @PutMapping("/updateCompany")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> updateCompany(@RequestHeader(name = "Authorization") String token, @RequestBody Company company) throws
+    public ResponseEntity<?> updateCompany(@RequestHeader(name = HEADER) String token, @RequestBody Company company) throws
             NotFoundException, InvalidUserException, JWTexpiredException, UpdateNameException, UncompletedFieldsException {
         if (company.unCompleteFields()) {
             throw new UncompletedFieldsException();
@@ -235,7 +237,7 @@ public class AdminController extends ClientController {
         company.setCoupons(adminService.getCompanyCoupons(company.getId()));
         adminService.updateCompany(company);
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(null);
     }
 
@@ -251,9 +253,9 @@ public class AdminController extends ClientController {
      * @throws NoCustomersException thrown when there are no customers in the system
      * @throws UncompletedFieldsException thrown when passed customer-object that missing some part/field
      */
-    @PutMapping("updateCustomer")
+    @PutMapping("/updateCustomer")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> updateCustomer(@RequestHeader(name = "Authorization") String token, @RequestBody Customer customer) throws
+    public ResponseEntity<?> updateCustomer(@RequestHeader(name = HEADER) String token, @RequestBody Customer customer) throws
             NotFoundException, InvalidUserException, JWTexpiredException, InvalidEmailException, NoCustomersException, UncompletedFieldsException {
         customer.setPurchases(adminService.getOneCustomer(customer.getId()).getPurchases());
         if (customer.unCompleteFields()) {
@@ -261,7 +263,7 @@ public class AdminController extends ClientController {
         }
         adminService.updateCustomer(customer);
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(null);
     }
 
@@ -274,13 +276,13 @@ public class AdminController extends ClientController {
      * @throws InvalidUserException thrown when passed invalid user-details
      * @throws JWTexpiredException thrown when the Token has expired
      */
-    @DeleteMapping("deleteCompany/{id}")
+    @DeleteMapping("/deleteCompany/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> deleteCompany(@RequestHeader(name = "Authorization") String token, @PathVariable int id) throws
+    public ResponseEntity<?> deleteCompany(@RequestHeader(name = HEADER) String token, @PathVariable int id) throws
             NotFoundException, InvalidUserException, JWTexpiredException {
         adminService.deleteCompany(id);
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(null);
     }
 
@@ -293,13 +295,13 @@ public class AdminController extends ClientController {
      * @throws InvalidUserException thrown when passed invalid user-details
      * @throws JWTexpiredException thrown when the Token has expired
      */
-    @DeleteMapping("deleteCustomer/{id}")
+    @DeleteMapping("/deleteCustomer/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> deleteCustomer(@RequestHeader(name = "Authorization") String token, @PathVariable int id) throws
+    public ResponseEntity<?> deleteCustomer(@RequestHeader(name = HEADER) String token, @PathVariable int id) throws
             NotFoundException, InvalidUserException, JWTexpiredException {
         adminService.deleteCustomer(id);
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(null);
     }
 

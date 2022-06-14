@@ -11,7 +11,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
+//todo: where to set the "Bearer?"
 @Service
 public class JWT {
 
