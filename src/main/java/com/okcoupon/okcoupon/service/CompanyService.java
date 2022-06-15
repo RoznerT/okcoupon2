@@ -50,11 +50,13 @@ public class CompanyService {
      * @throws DuplicateItemException thrown when user try to add coupon that already exists in the system
      * @throws ExpiredCouponException thrown when the coupon Expiration Date has passed
      */
-    public void addCoupon(Coupon coupon) throws DuplicateItemException, ExpiredCouponException {
+    public void addCoupon(Coupon coupon) throws DuplicateItemException, ExpiredCouponException, CompanyNameMismatchException {
         if (!couponRepo.existsByTitleAndCompanyId(coupon.getTitle(), coupon.getCompany().getId())) {
-            if (coupon.getEndDate().after(Date.from(Instant.now()))) {
-                couponRepo.saveAndFlush(coupon);
-            } else throw new ExpiredCouponException();
+            if (couponRepo.getById(coupon.getId()).getCompanyName().equals(coupon.getCompanyName())) {
+                if (coupon.getEndDate().after(Date.from(Instant.now()))) {
+                    couponRepo.saveAndFlush(coupon);
+                } else throw new ExpiredCouponException();
+            } else throw new CompanyNameMismatchException();
         } else throw new DuplicateItemException();
     }
 
@@ -63,9 +65,11 @@ public class CompanyService {
      * @param coupon instance of Coupon which holds all the details that coupon should have
      * @throws CouponNotFoundException thrown when user sends an invalid-coupon-id that doesn't exist in the system
      */
-    public void updateCoupon(Coupon coupon) throws CouponNotFoundException {
+    public void updateCoupon(Coupon coupon) throws CouponNotFoundException, CompanyNameMismatchException {
         if (couponRepo.existsById(coupon.getId())) {
-            couponRepo.saveAndFlush(coupon);
+            if (couponRepo.getById(coupon.getId()).getCompanyName().equals(coupon.getCompanyName())) {
+                couponRepo.saveAndFlush(coupon);
+            } else throw new CompanyNameMismatchException();
         } else throw new CouponNotFoundException();
     }
 

@@ -139,18 +139,18 @@ public class CompanyController extends ClientController {
      * @throws NotFoundException thrown when company doesn't exist in the system
      * @throws JWTexpiredException thrown when the Token has expired
      * @throws UncompletedFieldsException thrown when passed coupon-object that missing some part/field
-     * @throws unknownCategoryException thrown when passed coupon-object with unKnown Category that doesn't exist
+     * @throws UnknownCategoryException thrown when passed coupon-object with unKnown Category that doesn't exist
      */
     @PostMapping("/newCoupon")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> addCoupon(@RequestHeader(name = "Authorization") String token, @RequestBody Coupon coupon) throws
-            DuplicateItemException, ExpiredCouponException, InvalidUserException, NotFoundException, JWTexpiredException, UncompletedFieldsException, unknownCategoryException {
+            DuplicateItemException, ExpiredCouponException, InvalidUserException, NotFoundException, JWTexpiredException, UncompletedFieldsException, UnknownCategoryException, CompanyNameMismatchException {
         coupon.setCompany(companyService.getCompanyDetails(validation(token).getId()));
         if (coupon.unCompleteFields()){
             throw new UncompletedFieldsException();
         }
         if (coupon.validCategory()) {
-            throw new unknownCategoryException();
+            throw new UnknownCategoryException();
         }
         coupon.setCompanyName(companyService.getCompanyDetails(validation(token).getId()).getName());
         companyService.addCoupon(coupon);
@@ -170,11 +170,11 @@ public class CompanyController extends ClientController {
      * @throws JWTexpiredException thrown when the Token has expired
      * @throws NoPermissionException thrown when company try to update other company's coupon
      * @throws UncompletedFieldsException thrown when passed coupon-object that missing some part/field
-     * @throws unknownCategoryException thrown when passed coupon-object with unKnown Category that doesn't exist
+     * @throws UnknownCategoryException thrown when passed coupon-object with unKnown Category that doesn't exist
      */
     @PutMapping("/updateCoupon")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> updateCoupon(@RequestHeader(name = "Authorization") String token, @RequestBody Coupon coupon) throws InvalidUserException, CouponNotFoundException, NotFoundException, JWTexpiredException, NoPermissionException, UncompletedFieldsException, unknownCategoryException, UpdateNameException {
+    public ResponseEntity<?> updateCoupon(@RequestHeader(name = "Authorization") String token, @RequestBody Coupon coupon) throws InvalidUserException, CouponNotFoundException, NotFoundException, JWTexpiredException, NoPermissionException, UncompletedFieldsException, UnknownCategoryException, UpdateNameException, CompanyNameMismatchException {
         if (validation(token).getId() != companyService.getOneCoupon(coupon.getId()).getCompany().getId()) {
             throw new NoPermissionException();
         }
@@ -186,7 +186,7 @@ public class CompanyController extends ClientController {
             throw new UpdateNameException();
         }
         if (coupon.validCategory()){
-            throw new unknownCategoryException();
+            throw new UnknownCategoryException();
         }
         companyService.updateCoupon(coupon);
         return ResponseEntity.ok()
