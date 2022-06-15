@@ -52,7 +52,7 @@ public class CompanyService {
      */
     public void addCoupon(Coupon coupon) throws DuplicateItemException, ExpiredCouponException, CompanyNameMismatchException {
         if (!couponRepo.existsByTitleAndCompanyId(coupon.getTitle(), coupon.getCompany().getId())) {
-            if (couponRepo.getById(coupon.getId()).getCompanyName().equals(coupon.getCompanyName())) {
+            if (coupon.getCompany().getName().equals(coupon.getCompanyName())) {
                 if (coupon.getEndDate().after(Date.from(Instant.now()))) {
                     couponRepo.saveAndFlush(coupon);
                 } else throw new ExpiredCouponException();
