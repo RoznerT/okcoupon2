@@ -28,8 +28,8 @@ public class AdministratorRestTemplate implements CommandLineRunner {
 
     private String token;
 
-    //private static final String HEADER = "Authorization:Bearer";
-    private static final String HEADER_RESU = "Authorization";
+    private static final String HEADER_SET = "Authorization : Bearer";
+    private static final String HEADER_RES = "Authorization";
 
 
     private final static String login = "http://localhost:8080/administrator/Login";
@@ -49,7 +49,7 @@ public class AdministratorRestTemplate implements CommandLineRunner {
     private HttpEntity<?> getHttpEntity(String token, Object companyOrCustomer) {
         HttpEntity<?> httpEntity;
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HEADER_RESU, this.token);
+        httpHeaders.set(HEADER_RES, "Bearer "+this.token);
         if (companyOrCustomer instanceof Company || companyOrCustomer instanceof Customer) {
             httpEntity = new HttpEntity<>(companyOrCustomer, httpHeaders);
         } else httpEntity = new HttpEntity<>(httpHeaders);
@@ -57,19 +57,17 @@ public class AdministratorRestTemplate implements CommandLineRunner {
     }
 
     private void updateToken(ResponseEntity<?> responseEntity) {
-        String responseTokenHeader = responseEntity.getHeaders().getFirst(HEADER_RESU);
-        if (responseTokenHeader != null) {
-            //String newToken = responseTokenHeader.substring(8,219);
-            this.token = responseTokenHeader;
+        String responseTokenHeader = responseEntity.getHeaders().getFirst(HEADER_RES);
+        if (responseTokenHeader != null && responseTokenHeader.startsWith("Bearer")) {
+            this.token = responseTokenHeader.substring(8,219);
         }
     }
 
 
     private void login(UserDetails userDetails) {
         ResponseEntity<?> object = restTemplate.exchange(login, HttpMethod.POST, new HttpEntity<>(userDetails), void.class);
-        String token = object.getHeaders().getFirst(HEADER_RESU);
-        this.token = token;
-        System.out.println(ConsoleColors.PURPLE_BACKGROUND + userDetails.getUserName() + " logged through restTemplate " + LocalDate.now() + "\nThe token: " + token + ConsoleColors.RESET);
+       updateToken(object);
+        System.out.println(ConsoleColors.PURPLE_BACKGROUND + userDetails.getUserName() + " logged through restTemplate " + LocalDate.now() + "\nThe token: " + this.token + ConsoleColors.RESET);
     }
 
     private Company getCompany(int id) {

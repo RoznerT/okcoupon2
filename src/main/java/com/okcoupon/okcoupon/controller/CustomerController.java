@@ -23,8 +23,11 @@ public class CustomerController extends ClientController {
 
     @Autowired
     CustomerService customerService;
+
     @Autowired
     JWT jwt;
+
+    private static final String HEADER = "Authorization: Bearer";
 
     /**
      * Post-Method that indicated if the user that try to log in has the permission to use the system
@@ -54,7 +57,7 @@ public class CustomerController extends ClientController {
             throw new InvalidUserException();
         }
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(userDetails))
+                .header(HEADER, jwt.generateToken(userDetails))
                 .body(null);
     }
 
@@ -72,10 +75,10 @@ public class CustomerController extends ClientController {
      */
     @PostMapping("/newPurchase/{couponId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> purchaseCoupon(@RequestHeader(name = "Authorization") String token, @PathVariable int couponId) throws NoCouponsLeftException, SamePurchaseException, ExpiredCouponException, InvalidUserException, NotFoundException, JWTexpiredException {
+    public ResponseEntity<?> purchaseCoupon(@RequestHeader(name = HEADER) String token, @PathVariable int couponId) throws NoCouponsLeftException, SamePurchaseException, ExpiredCouponException, InvalidUserException, NotFoundException, JWTexpiredException {
         customerService.purchaseCoupon(customerService.getCustomerDetails(validation(token).getId()), couponId);
         return ResponseEntity.accepted()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(null);
     }
     /**
@@ -88,9 +91,9 @@ public class CustomerController extends ClientController {
      * @throws NoCouponPurchasesException thrown when there are no coupons for this company in the system
      */
     @GetMapping("/allCouponsCustomer")
-    public ResponseEntity<?> getAllCoupons(@RequestHeader(name = "Authorization") String token) throws InvalidUserException, JWTexpiredException, NoCouponPurchasesException {
+    public ResponseEntity<?> getAllCoupons(@RequestHeader(name = HEADER) String token) throws InvalidUserException, JWTexpiredException, NoCouponPurchasesException {
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(customerService.getCustomerCoupons(validation(token).getId()));
     }
     /**
@@ -105,9 +108,9 @@ public class CustomerController extends ClientController {
      * @throws NoCouponPurchasesException thrown when there are no coupons for this customer in the system
      */
     @GetMapping("/CustomerCouponsByCategory{category}")
-    public ResponseEntity<?> getCouponsByCategory(@RequestHeader(name = "Authorization") String token, @PathVariable Category category) throws InvalidUserException, NoCouponsCategoryException, JWTexpiredException, NoCouponPurchasesException {
+    public ResponseEntity<?> getCouponsByCategory(@RequestHeader(name = HEADER) String token, @PathVariable Category category) throws InvalidUserException, NoCouponsCategoryException, JWTexpiredException, NoCouponPurchasesException {
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(customerService.getCustomerCouponsByCategory(validation(token).getId(), category));
 
     }
@@ -123,9 +126,9 @@ public class CustomerController extends ClientController {
      * @throws NoCouponPurchasesException thrown when there are no coupons for this company in the system
      */
     @GetMapping("/CustomerCouponsByPrice{price}")
-    public ResponseEntity<?> getCouponsByMaxPrice(@RequestHeader(name = "Authorization") String token, @PathVariable double price) throws InvalidUserException, NoCouponsPriceException, JWTexpiredException, NoCouponPurchasesException {
+    public ResponseEntity<?> getCouponsByMaxPrice(@RequestHeader(name = HEADER) String token, @PathVariable double price) throws InvalidUserException, NoCouponsPriceException, JWTexpiredException, NoCouponPurchasesException {
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(customerService.getCustomerCouponsByPrice(validation(token).getId(), price));
 
     }
@@ -140,9 +143,9 @@ public class CustomerController extends ClientController {
      */
     @GetMapping("/customerDetails")
     @JsonView(Views.Public.class)
-    public ResponseEntity<?> getCustomerDetails(@RequestHeader(name = "Authorization") String token) throws InvalidUserException, JWTexpiredException, NotFoundException {
+    public ResponseEntity<?> getCustomerDetails(@RequestHeader(name = HEADER) String token) throws InvalidUserException, JWTexpiredException, NotFoundException {
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(customerService.getCustomerDetails(validation(token).getId()));
     }
 

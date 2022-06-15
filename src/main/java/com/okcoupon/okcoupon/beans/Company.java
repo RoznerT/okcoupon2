@@ -38,7 +38,7 @@ public class Company {
     @JsonView(Views.Internal.class)
     private String password;
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "company")
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "company")
     private Collection<Coupon> coupons = new HashSet<>();
 
     /**

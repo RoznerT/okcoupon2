@@ -29,7 +29,7 @@ public class AdminController extends ClientController {
     @Autowired
     ApplicationContext ctx;
 
-     private static final String HEADER = "Authorization";
+     private static final String HEADER = "Authorization: Bearer";
 
 
     /**
@@ -316,7 +316,8 @@ public class AdminController extends ClientController {
     private UserDetails validation(String token) throws InvalidUserException, JWTexpiredException {
         try {
             UserDetails adminUserDetails = ctx.getBean("admin", UserDetails.class);
-            if (jwt.validateToken(token).getClientType().equals(adminUserDetails.getClientType())) {
+            String newToken =  token.substring(8,219);
+            if (jwt.validateToken(newToken).getClientType().equals(adminUserDetails.getClientType())) {
                 return adminUserDetails;
             }
         } catch (Exception err) {

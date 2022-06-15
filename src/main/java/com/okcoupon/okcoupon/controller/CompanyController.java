@@ -26,6 +26,8 @@ public class CompanyController extends ClientController {
     @Autowired
     JWT jwt;
 
+    private static final String HEADER = "Authorization: Bearer";
+
     /**
      * Post-Method that indicated if the user that try to log in has the permission to use the system
      * by searching in the dataBase the existence of the data that passed to the Method and by compare the Role
@@ -54,7 +56,7 @@ public class CompanyController extends ClientController {
             throw new InvalidUserException();
         }
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(userDetails))
+                .header(HEADER, jwt.generateToken(userDetails))
                 .body(null);
     }
 
@@ -69,9 +71,9 @@ public class CompanyController extends ClientController {
      */
     @GetMapping("/companyDetails")
     @JsonView(Views.Public.class)
-    public ResponseEntity<?> getCompanyDetails(@RequestHeader(name = "Authorization") String token) throws InvalidUserException, NotFoundException, JWTexpiredException {
+    public ResponseEntity<?> getCompanyDetails(@RequestHeader(name = HEADER) String token) throws InvalidUserException, NotFoundException, JWTexpiredException {
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(companyService.getCompanyDetails(validation(token).getId()));
     }
 
@@ -86,7 +88,7 @@ public class CompanyController extends ClientController {
      * @throws NotFoundException thrown when user sends an invalid-id that doesn't exist in the system
      */
     @GetMapping("/allCouponsCompany")
-    public ResponseEntity<?> getAllCoupons(@RequestHeader(name = "Authorization") String token) throws InvalidUserException, JWTexpiredException, NoCouponsCompanyException, NotFoundException {
+    public ResponseEntity<?> getAllCoupons(@RequestHeader(name = HEADER) String token) throws InvalidUserException, JWTexpiredException, NoCouponsCompanyException, NotFoundException {
         return ResponseEntity.ok()
                 .header("Authorization", jwt.generateToken(validation(token)))
                 .body(companyService.getCompanyCoupons(validation(token).getId()));
@@ -104,9 +106,9 @@ public class CompanyController extends ClientController {
      * @throws NoCouponsCompanyException thrown when there are no coupons for this company in the system
      */
     @GetMapping("/CompanyCouponsByCategory{category}")
-    public ResponseEntity<?> getCouponsByCategory(@RequestHeader(name = "Authorization") String token, @PathVariable Category category) throws InvalidUserException, NoCouponsCategoryException, JWTexpiredException, NoCouponsCompanyException {
+    public ResponseEntity<?> getCouponsByCategory(@RequestHeader(name = HEADER) String token, @PathVariable Category category) throws InvalidUserException, NoCouponsCategoryException, JWTexpiredException, NoCouponsCompanyException {
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(companyService.getCouponByCategory(validation(token).getId(), category));
     }
 
@@ -122,9 +124,9 @@ public class CompanyController extends ClientController {
      * @throws NoCouponsCompanyException thrown when there are no coupons for this company in the system
      */
     @GetMapping("/CompanyCouponsByPrice{price}")
-    public ResponseEntity<?> getCouponsByMaxPrice(@RequestHeader(name = "Authorization") String token, @PathVariable double price) throws InvalidUserException, NoCouponsPriceException, JWTexpiredException, NoCouponsCompanyException {
+    public ResponseEntity<?> getCouponsByMaxPrice(@RequestHeader(name = HEADER) String token, @PathVariable double price) throws InvalidUserException, NoCouponsPriceException, JWTexpiredException, NoCouponsCompanyException {
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(companyService.getCouponByMaxPrice(validation(token).getId(), price));
     }
 
@@ -143,7 +145,7 @@ public class CompanyController extends ClientController {
      */
     @PostMapping("/newCoupon")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> addCoupon(@RequestHeader(name = "Authorization") String token, @RequestBody Coupon coupon) throws
+    public ResponseEntity<?> addCoupon(@RequestHeader(name = HEADER) String token, @RequestBody Coupon coupon) throws
             DuplicateItemException, ExpiredCouponException, InvalidUserException, NotFoundException, JWTexpiredException, UncompletedFieldsException, UnknownCategoryException, CompanyNameMismatchException {
         coupon.setCompany(companyService.getCompanyDetails(validation(token).getId()));
         if (coupon.unCompleteFields()){
@@ -155,7 +157,7 @@ public class CompanyController extends ClientController {
         coupon.setCompanyName(companyService.getCompanyDetails(validation(token).getId()).getName());
         companyService.addCoupon(coupon);
         return ResponseEntity.accepted()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(null);
     }
 
@@ -174,7 +176,7 @@ public class CompanyController extends ClientController {
      */
     @PutMapping("/updateCoupon")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> updateCoupon(@RequestHeader(name = "Authorization") String token, @RequestBody Coupon coupon) throws InvalidUserException, CouponNotFoundException, NotFoundException, JWTexpiredException, NoPermissionException, UncompletedFieldsException, UnknownCategoryException, UpdateNameException, CompanyNameMismatchException {
+    public ResponseEntity<?> updateCoupon(@RequestHeader(name = HEADER) String token, @RequestBody Coupon coupon) throws InvalidUserException, CouponNotFoundException, NotFoundException, JWTexpiredException, NoPermissionException, UncompletedFieldsException, UnknownCategoryException, UpdateNameException, CompanyNameMismatchException {
         if (validation(token).getId() != companyService.getOneCoupon(coupon.getId()).getCompany().getId()) {
             throw new NoPermissionException();
         }
@@ -190,7 +192,7 @@ public class CompanyController extends ClientController {
         }
         companyService.updateCoupon(coupon);
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(null);
     }
 
@@ -205,13 +207,13 @@ public class CompanyController extends ClientController {
      * @throws NoPermissionException thrown when company try to delete other company's coupon
      */
     @DeleteMapping("/deleteCoupon/{id}")
-    public ResponseEntity<?> deleteCoupon(@RequestHeader(name = "Authorization") String token, @PathVariable int id) throws NotFoundException, InvalidUserException, JWTexpiredException, NoPermissionException {
+    public ResponseEntity<?> deleteCoupon(@RequestHeader(name = HEADER) String token, @PathVariable int id) throws NotFoundException, InvalidUserException, JWTexpiredException, NoPermissionException {
         if (validation(token).getId() != companyService.getOneCoupon(id).getCompany().getId()) {
             throw new NoPermissionException();
         }
         companyService.deleteCoupon(id);
         return ResponseEntity.ok()
-                .header("Authorization", jwt.generateToken(validation(token)))
+                .header(HEADER, jwt.generateToken(validation(token)))
                 .body(null);
     }
 
