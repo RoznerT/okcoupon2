@@ -56,10 +56,9 @@ public class AdministratorRestTemplate implements CommandLineRunner {
         return httpEntity;
     }
 
-    private void updateToken(ResponseEntity<?> responseEntity){
+    private void updateToken(ResponseEntity<?> responseEntity) {
         String responseTokenHeader = responseEntity.getHeaders().getFirst(HEADER_RESU);
-        if (responseTokenHeader != null ) {
-            System.out.println(responseTokenHeader);
+        if (responseTokenHeader != null) {
             //String newToken = responseTokenHeader.substring(8,219);
             this.token = responseTokenHeader;
         }
@@ -67,257 +66,119 @@ public class AdministratorRestTemplate implements CommandLineRunner {
 
 
     private void login(UserDetails userDetails) {
-        try {
-            ResponseEntity<?> object = restTemplate.exchange(login, HttpMethod.POST, new HttpEntity<>(userDetails), void.class);
-            if (object.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (object.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            String token =object.getHeaders().getFirst(HEADER_RESU);
-            //String newToken = token.substring(8,219);
-            this.token= token;
-
-            System.out.println(ConsoleColors.PURPLE_BACKGROUND + userDetails.getUserName() + " logged through restTemplate " + LocalDate.now() + "\nThe token: " + token + ConsoleColors.RESET);
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
+        ResponseEntity<?> object = restTemplate.exchange(login, HttpMethod.POST, new HttpEntity<>(userDetails), void.class);
+        String token = object.getHeaders().getFirst(HEADER_RESU);
+        this.token = token;
+        System.out.println(ConsoleColors.PURPLE_BACKGROUND + userDetails.getUserName() + " logged through restTemplate " + LocalDate.now() + "\nThe token: " + token + ConsoleColors.RESET);
     }
 
     private Company getCompany(int id) {
-        try {
-            Map<String, String> param = new HashMap<>();
-            param.put("id", String.valueOf(id));
-            ResponseEntity<Company> getOneCompany = restTemplate.exchange(getCompany, HttpMethod.GET, getHttpEntity(this.token, null), Company.class, param);
-            if (getOneCompany.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + getOneCompany.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (getOneCompany.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + getOneCompany.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            Company company = getOneCompany.getBody();
-            System.out.println(ConsoleColors.BLUE + "company through restTemplate");
-            System.out.println(company + ConsoleColors.RESET);
-            updateToken(getOneCompany);
-            return company;
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
-        return null;
+        Map<String, String> param = new HashMap<>();
+        param.put("id", String.valueOf(id));
+        ResponseEntity<Company> getOneCompany = restTemplate.exchange(getCompany, HttpMethod.GET, getHttpEntity(this.token, null), Company.class, param);
+        Company company = getOneCompany.getBody();
+        System.out.println(ConsoleColors.BLUE + "company through restTemplate");
+        System.out.println(company + ConsoleColors.RESET);
+        updateToken(getOneCompany);
+        return company;
     }
 
     private Customer getCustomer(int id) {
-        try {
-            Map<String, String> param = new HashMap<>();
-            param.put("id", String.valueOf(id));
-            ResponseEntity<Customer> getOneCustomer = restTemplate.exchange(getCustomer, HttpMethod.GET, getHttpEntity(this.token, null), Customer.class, param);
-            if (getOneCustomer.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + getOneCustomer.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (getOneCustomer.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + getOneCustomer.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            Customer customer = getOneCustomer.getBody();
-            System.out.println(ConsoleColors.BLUE + "customer through restTemplate");
-            System.out.println(customer + ConsoleColors.RESET);
-            updateToken(getOneCustomer);
-            return customer;
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
-        return null;
+        Map<String, String> param = new HashMap<>();
+        param.put("id", String.valueOf(id));
+        ResponseEntity<Customer> getOneCustomer = restTemplate.exchange(getCustomer, HttpMethod.GET, getHttpEntity(this.token, null), Customer.class, param);
+        Customer customer = getOneCustomer.getBody();
+        System.out.println(ConsoleColors.BLUE + "customer through restTemplate");
+        System.out.println(customer + ConsoleColors.RESET);
+        updateToken(getOneCustomer);
+        return customer;
     }
 
     private List<Company> allCompanies() {
-        try {
-            ResponseEntity<Company[]> getAllCompanies = restTemplate.exchange(allCompanies, HttpMethod.GET, getHttpEntity(this.token, null), Company[].class);
-            if (getAllCompanies.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + getAllCompanies.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (getAllCompanies.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + getAllCompanies.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            List<Company> companies = Arrays.asList(getAllCompanies.getBody());
-            System.out.println(ConsoleColors.BLUE + "all companies through restTemplate");
-            companies.forEach(System.out::println);
-            System.out.println(ConsoleColors.RESET);
-            updateToken(getAllCompanies);
-            return companies;
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
-        return null;
+        ResponseEntity<Company[]> getAllCompanies = restTemplate.exchange(allCompanies, HttpMethod.GET, getHttpEntity(this.token, null), Company[].class);
+        List<Company> companies = Arrays.asList(getAllCompanies.getBody());
+        System.out.println(ConsoleColors.BLUE + "all companies through restTemplate");
+        companies.forEach(System.out::println);
+        System.out.println(ConsoleColors.RESET);
+        updateToken(getAllCompanies);
+        return companies;
     }
 
     private List<Customer> allCustomers() {
-        try {
-            ResponseEntity<Customer[]> getAllCustomers = restTemplate.exchange(allCustomers, HttpMethod.GET, getHttpEntity(this.token, null), Customer[].class);
-            if (getAllCustomers.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + getAllCustomers.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (getAllCustomers.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + getAllCustomers.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            List<Customer> customers = Arrays.asList(getAllCustomers.getBody());
-            System.out.println(ConsoleColors.BLUE + "all customers through restTemplate");
-            customers.forEach(System.out::println);
-            System.out.println(ConsoleColors.RESET);
-            updateToken(getAllCustomers);
-            return customers;
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
-        return null;
+        ResponseEntity<Customer[]> getAllCustomers = restTemplate.exchange(allCustomers, HttpMethod.GET, getHttpEntity(this.token, null), Customer[].class);
+        List<Customer> customers = Arrays.asList(getAllCustomers.getBody());
+        System.out.println(ConsoleColors.BLUE + "all customers through restTemplate");
+        customers.forEach(System.out::println);
+        System.out.println(ConsoleColors.RESET);
+        updateToken(getAllCustomers);
+        return customers;
     }
 
     private void customerCoupons(int id) {
-        try {
-            Map<String, String> param = new HashMap<>();
-            param.put("id", String.valueOf(id));
-            ResponseEntity<Coupon[]> getCustomerCoupons = restTemplate.exchange(customerCoupons, HttpMethod.GET, getHttpEntity(this.token, null), Coupon[].class, param);
-            if (getCustomerCoupons.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + getCustomerCoupons.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (getCustomerCoupons.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + getCustomerCoupons.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            List<Coupon> customerCoupons = Arrays.asList(getCustomerCoupons.getBody());
-            System.out.println(ConsoleColors.BLUE + "customer coupons through restTemplate");
-            customerCoupons.forEach(Coupon::toPrint);
-            System.out.println(ConsoleColors.RESET);
-            updateToken(getCustomerCoupons);
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
+        Map<String, String> param = new HashMap<>();
+        param.put("id", String.valueOf(id));
+        ResponseEntity<Coupon[]> getCustomerCoupons = restTemplate.exchange(customerCoupons, HttpMethod.GET, getHttpEntity(this.token, null), Coupon[].class, param);
+        List<Coupon> customerCoupons = Arrays.asList(getCustomerCoupons.getBody());
+        System.out.println(ConsoleColors.BLUE + "customer coupons through restTemplate");
+        customerCoupons.forEach(Coupon::toPrint);
+        System.out.println(ConsoleColors.RESET);
+        updateToken(getCustomerCoupons);
     }
 
     private List<Coupon> companyCoupons(int id) {
-        try {
-            Map<String, String> param = new HashMap<>();
-            param.put("id", String.valueOf(id));
-            ResponseEntity<Coupon[]> getCompanyCoupons = restTemplate.exchange(companyCoupons, HttpMethod.GET, getHttpEntity(this.token, null), Coupon[].class, param);
-            if (getCompanyCoupons.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + getCompanyCoupons.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (getCompanyCoupons.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + getCompanyCoupons.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            List<Coupon> companyCoupons = Arrays.asList(getCompanyCoupons.getBody());
-            System.out.println(ConsoleColors.BLUE + "company coupons through restTemplate");
-            companyCoupons.forEach(Coupon::toPrint);
-            System.out.println(ConsoleColors.RESET);
-            updateToken(getCompanyCoupons);
-            return companyCoupons;
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
-        return null;
+        Map<String, String> param = new HashMap<>();
+        param.put("id", String.valueOf(id));
+        ResponseEntity<Coupon[]> getCompanyCoupons = restTemplate.exchange(companyCoupons, HttpMethod.GET, getHttpEntity(this.token, null), Coupon[].class, param);
+        List<Coupon> companyCoupons = Arrays.asList(getCompanyCoupons.getBody());
+        System.out.println(ConsoleColors.BLUE + "company coupons through restTemplate");
+        companyCoupons.forEach(Coupon::toPrint);
+        System.out.println(ConsoleColors.RESET);
+        updateToken(getCompanyCoupons);
+        return companyCoupons;
     }
 
     private void addCompany(Company company) {
-        try {
-            ResponseEntity<?> response = restTemplate.exchange(newCompany, HttpMethod.POST, getHttpEntity(this.token, company), void.class);
-            if (response.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + response.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (response.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + response.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            System.out.println(ConsoleColors.BLUE + company + "added successfully through restTemplate" + ConsoleColors.RESET);
-            updateToken(response);
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
+        ResponseEntity<?> response = restTemplate.exchange(newCompany, HttpMethod.POST, getHttpEntity(this.token, company), void.class);
+        System.out.println(ConsoleColors.BLUE + company + "added successfully through restTemplate" + ConsoleColors.RESET);
+        updateToken(response);
     }
 
     private void addCustomer(Customer customer) {
-        try {
-            ResponseEntity<?> object = restTemplate.exchange(newCustomer, HttpMethod.POST, getHttpEntity(this.token, customer), void.class);
-            if (object.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (object.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            System.out.println(ConsoleColors.BLUE + customer + "added successfully through restTemplate" + ConsoleColors.RESET);
-            updateToken(object);
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
+        ResponseEntity<?> object = restTemplate.exchange(newCustomer, HttpMethod.POST, getHttpEntity(this.token, customer), void.class);
+        System.out.println(ConsoleColors.BLUE + customer + "added successfully through restTemplate" + ConsoleColors.RESET);
+        updateToken(object);
     }
 
     private void updateCompany(Company company) {
-        try {
-            ResponseEntity<?> object = restTemplate.exchange(updateCompany, HttpMethod.PUT, getHttpEntity(this.token, company), void.class);
-            if (object.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (object.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            System.out.println(ConsoleColors.BLUE + company + "updated successfully through restTemplate" + ConsoleColors.RESET);
-            updateToken(object);
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
+        ResponseEntity<?> object = restTemplate.exchange(updateCompany, HttpMethod.PUT, getHttpEntity(this.token, company), void.class);
+        System.out.println(ConsoleColors.BLUE + company + "updated successfully through restTemplate" + ConsoleColors.RESET);
+        updateToken(object);
     }
 
     private void updateCustomer(Customer customer) {
-        try {
-            ResponseEntity<?> object = restTemplate.exchange(updateCustomer, HttpMethod.PUT, getHttpEntity(this.token, customer), void.class);
-            if (object.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (object.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            System.out.println(ConsoleColors.BLUE + customer + "updated successfully through restTemplate" + ConsoleColors.RESET);
-            updateToken(object);
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
+        ResponseEntity<?> object = restTemplate.exchange(updateCustomer, HttpMethod.PUT, getHttpEntity(this.token, customer), void.class);
+        System.out.println(ConsoleColors.BLUE + customer + "updated successfully through restTemplate" + ConsoleColors.RESET);
+        updateToken(object);
     }
 
     private void deleteCompany(int id) {
-        try {
-            Map<String, String> param = new HashMap<>();
-            param.put("id", String.valueOf(id));
-            ResponseEntity<?> object = restTemplate.exchange(deleteCompany, HttpMethod.DELETE, getHttpEntity(this.token, null), void.class, param);
-            if (object.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (object.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            System.out.println(ConsoleColors.BLUE + "company  " + id + " deleted successfully through restTemplate" + ConsoleColors.RESET);
-            updateToken(object);
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
+        Map<String, String> param = new HashMap<>();
+        param.put("id", String.valueOf(id));
+        ResponseEntity<?> object = restTemplate.exchange(deleteCompany, HttpMethod.DELETE, getHttpEntity(this.token, null), void.class, param);
+        System.out.println(ConsoleColors.BLUE + "company  " + id + " deleted successfully through restTemplate" + ConsoleColors.RESET);
+        updateToken(object);
     }
 
     private void deleteCustomer(int id) {
-        try {
-            Map<String, String> param = new HashMap<>();
-            param.put("id", String.valueOf(id));
-            ResponseEntity<?> object = restTemplate.exchange(deleteCustomer, HttpMethod.DELETE, getHttpEntity(this.token, null), void.class, param);
-            if (object.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (object.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            System.out.println(ConsoleColors.BLUE + "customer  " + id + " deleted successfully through restTemplate" + ConsoleColors.RESET);
-            updateToken(object);
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
+        Map<String, String> param = new HashMap<>();
+        param.put("id", String.valueOf(id));
+        ResponseEntity<?> object = restTemplate.exchange(deleteCustomer, HttpMethod.DELETE, getHttpEntity(this.token, null), void.class, param);
+        System.out.println(ConsoleColors.BLUE + "customer  " + id + " deleted successfully through restTemplate" + ConsoleColors.RESET);
+        updateToken(object);
     }
 
     @Override
     public void run(String... args) {
-
         try {
             UserDetails userDetails = UserDetails.builder()
                     .userName("admin@admin.com")

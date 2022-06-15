@@ -30,13 +30,13 @@ public class CustomerRestTemplate implements CommandLineRunner {
 
     private String token;
 
-    final static String login = "http://localhost:8080/customer/Login";
-    final static String newPurchase = "http://localhost:8080/customer/newPurchase/{couponId}";
-    final static String allCoupons = "http://localhost:8080/customer/allCouponsCustomer";
-    final static String couponsByCategory = "http://localhost:8080/customer/CustomerCouponsByCategory{category}";
-    final static String couponsByPrice = "http://localhost:8080/customer/CustomerCouponsByPrice{price}";
-    final static String customerDetails = "http://localhost:8080/customer/customerDetails";
-    final static String getAllCouponsInSystem = "http://localhost:8080/customer/allCouponsInSystem";
+    private final static String login = "http://localhost:8080/customer/Login";
+    private final static String newPurchase = "http://localhost:8080/customer/newPurchase/{couponId}";
+    private final static String allCoupons = "http://localhost:8080/customer/allCouponsCustomer";
+    private final static String couponsByCategory = "http://localhost:8080/customer/CustomerCouponsByCategory{category}";
+    private final static String couponsByPrice = "http://localhost:8080/customer/CustomerCouponsByPrice{price}";
+    private final static String customerDetails = "http://localhost:8080/customer/customerDetails";
+    private final static String getAllCouponsInSystem = "http://localhost:8080/customer/allCouponsInSystem";
 
     private HttpEntity<?> getHttpEntity(String token, Object couponOrCustomer) {
         HttpEntity<?> httpEntity;
@@ -56,143 +56,68 @@ public class CustomerRestTemplate implements CommandLineRunner {
     }
 
     private void login(UserDetails userDetails) {
-        try {
-            ResponseEntity<?> object = restTemplate.exchange(login, HttpMethod.POST, new HttpEntity<>(userDetails), void.class);
-            if (object.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (object.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            this.token = object.getHeaders().getFirst("Authorization");
-            System.out.println(ConsoleColors.PURPLE_BACKGROUND + userDetails.getUserName() + " logged through restTemplate " + LocalDate.now() + "\nThe token: " + token + ConsoleColors.RESET);
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
+        ResponseEntity<?> object = restTemplate.exchange(login, HttpMethod.POST, new HttpEntity<>(userDetails), void.class);
+        this.token = object.getHeaders().getFirst("Authorization");
+        System.out.println(ConsoleColors.PURPLE_BACKGROUND + userDetails.getUserName() + " logged through restTemplate " + LocalDate.now() + "\nThe token: " + token + ConsoleColors.RESET);
     }
 
     private void newPurchase(int couponId) {
-        try {
-            Map<String, String> param = new HashMap<>();
-            param.put("couponId", String.valueOf(couponId));
-            ResponseEntity<Void> object = restTemplate.exchange(newPurchase, HttpMethod.POST, getHttpEntity(this.token, null), void.class, param);
-            if (object.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (object.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + object.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            System.out.println(ConsoleColors.PURPLE_BRIGHT + "coupon " + couponId + " successfully purchased for " + getCustomerDetails().getFirstName() + " through restTemplate" + ConsoleColors.RESET);
-            updateToken(object);
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
+        Map<String, String> param = new HashMap<>();
+        param.put("couponId", String.valueOf(couponId));
+        ResponseEntity<Void> object = restTemplate.exchange(newPurchase, HttpMethod.POST, getHttpEntity(this.token, null), void.class, param);
+        System.out.println(ConsoleColors.PURPLE_BRIGHT + "coupon " + couponId + " successfully purchased for " + getCustomerDetails().getFirstName() + " through restTemplate" + ConsoleColors.RESET);
+        updateToken(object);
     }
 
     private List<Coupon> allCoupons() {
-        try {
-            ResponseEntity<Coupon[]> getAllCoupons = restTemplate.exchange(allCoupons, HttpMethod.GET, getHttpEntity(this.token, null), Coupon[].class);
-            if (getAllCoupons.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + getAllCoupons.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (getAllCoupons.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + getAllCoupons.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            List<Coupon> coupons = Arrays.asList(getAllCoupons.getBody());
-            System.out.println(ConsoleColors.PURPLE_BRIGHT + "all coupons of customer through restTemplate");
-            coupons.forEach(Coupon::toPrint);
-            System.out.println(ConsoleColors.RESET);
-            updateToken(getAllCoupons);
-            return coupons;
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
-        return null;
+        ResponseEntity<Coupon[]> getAllCoupons = restTemplate.exchange(allCoupons, HttpMethod.GET, getHttpEntity(this.token, null), Coupon[].class);
+        List<Coupon> coupons = Arrays.asList(getAllCoupons.getBody());
+        System.out.println(ConsoleColors.PURPLE_BRIGHT + "all coupons of customer through restTemplate");
+        coupons.forEach(Coupon::toPrint);
+        System.out.println(ConsoleColors.RESET);
+        updateToken(getAllCoupons);
+        return coupons;
     }
 
     private List<Coupon> couponsByCategory(Category category) {
-        try {
-            Map<String, String> param = new HashMap<>();
-            param.put("category", category.getCategoryType());
-            ResponseEntity<Coupon[]> getCouponsByCategory = restTemplate.exchange(couponsByCategory, HttpMethod.GET, getHttpEntity(this.token, null), Coupon[].class, param);
-            if (getCouponsByCategory.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException(ConsoleColors.RED + "Server error:" + getCouponsByCategory.getStatusCode().name());
-            }
-            if (getCouponsByCategory.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException("Client error:" + getCouponsByCategory.getStatusCode().name());
-            }
-            List<Coupon> coupons = Arrays.asList(getCouponsByCategory.getBody());
-            System.out.println(ConsoleColors.PURPLE_BRIGHT + "all coupon  Of customer  by category through restTemplate");
-            coupons.forEach(Coupon::toPrint);
-            System.out.print(ConsoleColors.RESET);
-            updateToken(getCouponsByCategory);
-            return coupons;
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
-        return null;
+        Map<String, String> param = new HashMap<>();
+        param.put("category", category.getCategoryType());
+        ResponseEntity<Coupon[]> getCouponsByCategory = restTemplate.exchange(couponsByCategory, HttpMethod.GET, getHttpEntity(this.token, null), Coupon[].class, param);
+        List<Coupon> coupons = Arrays.asList(getCouponsByCategory.getBody());
+        System.out.println(ConsoleColors.PURPLE_BRIGHT + "all coupon  Of customer  by category through restTemplate");
+        coupons.forEach(Coupon::toPrint);
+        System.out.print(ConsoleColors.RESET);
+        updateToken(getCouponsByCategory);
+        return coupons;
     }
 
     private List<Coupon> couponsByPrice(int price) {
-        try {
-            Map<String, String> param = new HashMap<>();
-            param.put("price", String.valueOf(price));
-            ResponseEntity<Coupon[]> getCouponsByPrice = restTemplate.exchange(couponsByPrice, HttpMethod.GET, getHttpEntity(this.token, null), Coupon[].class, param);
-            if (getCouponsByPrice.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException("Server error:" + getCouponsByPrice.getStatusCode().name());
-            }
-            if (getCouponsByPrice.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException("Client error:" + getCouponsByPrice.getStatusCode().name());
-            }
-            List<Coupon> coupons = Arrays.asList(getCouponsByPrice.getBody());
-            System.out.println(ConsoleColors.PURPLE_BRIGHT + "all coupon  Of customer  by price through restTemplate");
-            coupons.forEach(Coupon::toPrint);
-            System.out.print(ConsoleColors.RESET);
-            updateToken(getCouponsByPrice);
-            return coupons;
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
-        return null;
+        Map<String, String> param = new HashMap<>();
+        param.put("price", String.valueOf(price));
+        ResponseEntity<Coupon[]> getCouponsByPrice = restTemplate.exchange(couponsByPrice, HttpMethod.GET, getHttpEntity(this.token, null), Coupon[].class, param);
+        List<Coupon> coupons = Arrays.asList(getCouponsByPrice.getBody());
+        System.out.println(ConsoleColors.PURPLE_BRIGHT + "all coupon  Of customer  by price through restTemplate");
+        coupons.forEach(Coupon::toPrint);
+        System.out.print(ConsoleColors.RESET);
+        updateToken(getCouponsByPrice);
+        return coupons;
     }
 
-    private Customer getCustomerDetails() throws ServerErrorException, ClientErrorException {
-        try {
-            ResponseEntity<Customer> getDetails = restTemplate.exchange(customerDetails, HttpMethod.GET, getHttpEntity(this.token, null), Customer.class);
-            if (getDetails.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException("Server error:" + getDetails.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (getDetails.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + getDetails.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            Customer customer = getDetails.getBody();
-            System.out.println(ConsoleColors.PURPLE_BRIGHT + "customer details through restTemplate\n" + customer + ConsoleColors.RESET);
-            updateToken(getDetails);
-            return customer;
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
-        return null;
+    private Customer getCustomerDetails() {
+        ResponseEntity<Customer> getDetails = restTemplate.exchange(customerDetails, HttpMethod.GET, getHttpEntity(this.token, null), Customer.class);
+        Customer customer = getDetails.getBody();
+        System.out.println(ConsoleColors.PURPLE_BRIGHT + "customer details through restTemplate\n" + customer + ConsoleColors.RESET);
+        updateToken(getDetails);
+        return customer;
     }
 
     private List<Coupon> allCouponsInSystem() {
-        try {
-            ResponseEntity<Coupon[]> getCoupons = restTemplate.getForEntity(getAllCouponsInSystem, Coupon[].class);
-            if (getCoupons.getStatusCode().is5xxServerError()) {
-                throw new ServerErrorException("Server error:" + getCoupons.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            if (getCoupons.getStatusCode().is4xxClientError()) {
-                throw new ClientErrorException(ConsoleColors.RED + "Client error:" + getCoupons.getStatusCode().name() + ConsoleColors.RESET);
-            }
-            List<Coupon> coupons = Arrays.asList(getCoupons.getBody());
-            System.out.println(ConsoleColors.PURPLE_BRIGHT + "all coupons in system through restTemplate");
-            coupons.forEach(Coupon::toPrint);
-            System.out.print(ConsoleColors.RESET);
-            return coupons;
-        } catch (ServerErrorException | ClientErrorException error) {
-            System.out.println(error.getMessage());
-        }
-        return null;
+        ResponseEntity<Coupon[]> getCoupons = restTemplate.getForEntity(getAllCouponsInSystem, Coupon[].class);
+        List<Coupon> coupons = Arrays.asList(getCoupons.getBody());
+        System.out.println(ConsoleColors.PURPLE_BRIGHT + "all coupons in system through restTemplate");
+        coupons.forEach(Coupon::toPrint);
+        System.out.print(ConsoleColors.RESET);
+        return coupons;
     }
 
     @Override

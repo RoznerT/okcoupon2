@@ -157,7 +157,7 @@ public class CouponSystemAdvise {
     @ExceptionHandler(value = {NoCouponsLeftException.class})
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public ErrorDetail noCouponsMessage(Exception err) {
-        return new ErrorDetail("Sorry! ", err.getMessage());
+        return new ErrorDetail("Sorry No Coupons! ", err.getMessage());
     }
     /**
      * method invoked when Same-Purchase-Exception has thrown

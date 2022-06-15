@@ -13,7 +13,19 @@ import java.util.List;
 
 @Repository
 public interface CouponRepo extends JpaRepository<Coupon, Integer> {
-
+    /**
+     * send a query to the dataBase and to get a List of records-Coupon objects in Coupons.Table
+     * with the Category the user send as a parameter
+     * @param category enum type that perform the category of the coupons
+     * @return List of coupons,each instance initialized by the values of all fields of each required record
+     */
+    List<Coupon> findByCategory(Category category);
+    /**
+     * send a query to the dataBase and to get a List of records-Coupon objects in Coupons.Table
+     * with the  Maximum price the user send as a parameter
+     * @param price Double value that perform the Maximum price of the coupons
+     * @return List of coupons,each instance initialized by the values of all fields of each required record
+     */
     List<Coupon> findByPriceLessThan(double price);
     /**
      * send a query to the dataBase and to get a List of records-Coupon objects in Coupons.Table
@@ -61,13 +73,17 @@ public interface CouponRepo extends JpaRepository<Coupon, Integer> {
     /**
      * send a DELETE type query to delete a specific record in Coupons.Table
      * by the couponId the user send as a parameter
-     * @param couponId Integer value perform the id of the company which is the Generated-key of coupon
+     * @param couponId Integer value perform the id of the coupon which is the Generated-key of coupon
      */
     @Transactional
     @Modifying
     @Query(value = "DELETE FROM okcoupon2.coupons u WHERE u.id = :id", nativeQuery = true)
     void deleteById(@Param("id") int couponId);
-
+    /**
+     * send a DELETE type query to delete all records that holds specific companyId in Coupons.Table
+     * by the companyId the user send as a parameter
+     * @param companyId Integer value perform the id of the company which is the Generated-key of company
+     */
     @Transactional
     @Modifying
     @Query(value = "DELETE FROM okcoupon2.coupons u WHERE u.company_id = :company_id", nativeQuery = true)
