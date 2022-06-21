@@ -29,8 +29,7 @@ public class CompanyRestTemplate implements CommandLineRunner {
 
     private String token;
 
-    private static final String HEADER_SET = "Authorization : Bearer";
-    private static final String HEADER_RES = "Authorization";
+    private static final String HEADER = "Authorization";
 
     private final static String loginUrl = "http://localhost:8080/company/Login";
     private final static String allCouponsUrl = "http://localhost:8080/company/allCouponsCompany";
@@ -44,7 +43,7 @@ public class CompanyRestTemplate implements CommandLineRunner {
     private HttpEntity<?> getHttpEntity(String token, Object object) {
         HttpEntity<?> httpEntity;
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HEADER_SET, this.token);
+        httpHeaders.set(HEADER, this.token);
         if (object instanceof Coupon) {
             httpEntity = new HttpEntity<>(object, httpHeaders);
         } else httpEntity = new HttpEntity<>(httpHeaders);
@@ -52,9 +51,9 @@ public class CompanyRestTemplate implements CommandLineRunner {
     }
 
     private void updateToken(ResponseEntity<?> responseEntity) {
-        String responseTokenHeader = responseEntity.getHeaders().getFirst(HEADER_RES);
-        if (responseTokenHeader != null && responseTokenHeader.startsWith("Bearer")) {
-            this.token = responseTokenHeader.substring(8,219);
+        String responseTokenHeader = responseEntity.getHeaders().getFirst(HEADER);
+        if (responseTokenHeader != null ) {
+            this.token = responseTokenHeader;
         }
     }
 

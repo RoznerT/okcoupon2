@@ -28,8 +28,7 @@ public class AdministratorRestTemplate implements CommandLineRunner {
 
     private String token;
 
-    private static final String HEADER_SET = "Authorization : Bearer";
-    private static final String HEADER_RES = "Authorization";
+    private static final String HEADER = "Authorization";
 
 
     private final static String login = "http://localhost:8080/administrator/Login";
@@ -49,7 +48,7 @@ public class AdministratorRestTemplate implements CommandLineRunner {
     private HttpEntity<?> getHttpEntity(String token, Object companyOrCustomer) {
         HttpEntity<?> httpEntity;
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HEADER_RES, "Bearer "+this.token);
+        httpHeaders.set(HEADER, this.token);
         if (companyOrCustomer instanceof Company || companyOrCustomer instanceof Customer) {
             httpEntity = new HttpEntity<>(companyOrCustomer, httpHeaders);
         } else httpEntity = new HttpEntity<>(httpHeaders);
@@ -57,9 +56,9 @@ public class AdministratorRestTemplate implements CommandLineRunner {
     }
 
     private void updateToken(ResponseEntity<?> responseEntity) {
-        String responseTokenHeader = responseEntity.getHeaders().getFirst(HEADER_RES);
-        if (responseTokenHeader != null && responseTokenHeader.startsWith("Bearer")) {
-            this.token = responseTokenHeader.substring(8,219);
+        String responseTokenHeader = responseEntity.getHeaders().getFirst(HEADER);
+        if (responseTokenHeader != null ) {
+            this.token = responseTokenHeader;
         }
     }
 
@@ -211,7 +210,6 @@ public class AdministratorRestTemplate implements CommandLineRunner {
         }
 
         try {
-            //todo: getting an error of JSON parse because unexpected character =
             addCompany(Company.builder().email("taltul@gmail.com").name("tal").password("0000").build());
         } catch (Exception error) {
             System.out.println(error.getMessage());

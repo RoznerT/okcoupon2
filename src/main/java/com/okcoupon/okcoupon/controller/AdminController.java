@@ -15,6 +15,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.lang.annotation.ElementType;
+
 @CrossOrigin
 @RestController
 @RequestMapping("administrator")
@@ -29,7 +32,7 @@ public class AdminController extends ClientController {
     @Autowired
     ApplicationContext ctx;
 
-     private static final String HEADER = "Authorization: Bearer";
+     private static final String HEADER = "Authorization";
 
 
     /**
@@ -316,8 +319,7 @@ public class AdminController extends ClientController {
     private UserDetails validation(String token) throws InvalidUserException, JWTexpiredException {
         try {
             UserDetails adminUserDetails = ctx.getBean("admin", UserDetails.class);
-            String newToken =  token.substring(8,219);
-            if (jwt.validateToken(newToken).getClientType().equals(adminUserDetails.getClientType())) {
+            if (jwt.validateToken(token).getClientType().equals(adminUserDetails.getClientType())) {
                 return adminUserDetails;
             }
         } catch (Exception err) {

@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 @CrossOrigin
 @RestController
 @RequestMapping("company")
@@ -26,7 +28,7 @@ public class CompanyController extends ClientController {
     @Autowired
     JWT jwt;
 
-    private static final String HEADER = "Authorization: Bearer";
+    private static final String HEADER = "Authorization";
 
     /**
      * Post-Method that indicated if the user that try to log in has the permission to use the system

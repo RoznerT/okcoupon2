@@ -67,7 +67,7 @@ class AdminServiceTest {
     private final int WRONG_ID = 42;
 
     @Test
-    @DisplayName("LOGIN - throw exception when insert invalid userName and password")
+    @DisplayName("throws exception when insert invalid userName and password")
     void loginTest() {
         Exception error = assertThrows(Exception.class, ()-> {
             adminServiceUnderTest.login("wrongEmail@", "wrongPassword");
@@ -76,7 +76,7 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("ADD COMPANY 1 - when insert email already exist")
+    @DisplayName("throws exception when insert email already exist")
     void addCompanyTest1() {
         Exception error = assertThrows(Exception.class, ()-> {
             companyToAdd.setEmail("hyundai@gmail.com");
@@ -86,7 +86,7 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("ADD COMPANY 2 - when insert name already exist")
+    @DisplayName("throws exception when insert name already exist")
     void addCompanyTest2() {
         Exception error = assertThrows(Exception.class, ()-> {
             adminServiceUnderTest.addCompany(companyToAddSameName);
@@ -95,7 +95,7 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("ADD COMPANY 3 - throw exception when company already exist")
+    @DisplayName("throws exception when company already exist")
     void addCompanyTest3() {
         Exception error = assertThrows(Exception.class, ()-> {
             adminServiceUnderTest.addCompany(companyToGet);
@@ -104,7 +104,7 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("UPDATE COMPANY 1 - throw exception when insert wrong id that don't exist")
+    @DisplayName("throws exception when insert wrong id that don't exist")
     void updateCompanyTest1(){
         Exception error = assertThrows(Exception.class, ()-> {
             adminServiceUnderTest.updateCompany(companyToAdd); // no id obtained = 0;
@@ -113,7 +113,7 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("UPDATE COMPANY 2 - throw exception when try to update the company's name")
+    @DisplayName("throws exception when try to update the company's name")
     void updateCompanyTest2(){
         Exception error = assertThrows(Exception.class, ()-> {
             adminServiceUnderTest.updateCompany(companyToUpdateDifferentName);
@@ -122,7 +122,7 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("DELETE COMPANY FAIL - throw exception when insert wrong id that don't exist")
+    @DisplayName("throws exception when insert wrong id that don't exist")
     void deleteCompanyTest(){
         Exception error = assertThrows(Exception.class, ()-> {
             adminServiceUnderTest.deleteCompany(WRONG_ID);
@@ -131,7 +131,7 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("GET ONE COMPANY - throw exception when insert wrong id that don't exist")
+    @DisplayName("throws exception when insert wrong id that don't exist")
     void getOneCompanyTest(){
         Exception error = assertThrows(Exception.class, ()-> {
             adminServiceUnderTest.getOneCompany(WRONG_ID);
@@ -140,7 +140,7 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("ADD CUSTOMER - when company already exist")
+    @DisplayName("throws exception when company already exist")
     void addCustomerTest() {
         Exception error = assertThrows(Exception.class, ()-> {
             adminServiceUnderTest.addCustomer(customerToGet);
@@ -149,7 +149,7 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("UPDATE CUSTOMER - throw exception when try to update company's name")
+    @DisplayName("throws exception when try to update company's name")
     void updateCompanyTest(){
         Exception error = assertThrows(Exception.class, ()-> {
             adminServiceUnderTest.updateCustomer(customerToAdd); // no id obtained = 0;
@@ -158,7 +158,7 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("DELETE CUSTOMER - when insert wrong id that don't exist")
+    @DisplayName("throws exception when insert wrong id that don't exist")
     void deleteCustomerTest(){
         Exception error = assertThrows(Exception.class, ()-> {
             adminServiceUnderTest.deleteCustomer(WRONG_ID);
@@ -167,7 +167,7 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("GET ONE CUSTOMER - throw exception when insert wrong id that don't exist")
+    @DisplayName("throws exception when insert wrong id that don't exist")
     void getOneCustomerTest(){
         Exception error = assertThrows(Exception.class, ()-> {
             adminServiceUnderTest.getOneCustomer(WRONG_ID);
@@ -176,7 +176,7 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("GET COMPANY COUPONS - throw exception when insert wrong id that don't exist")
+    @DisplayName("throws exception when insert wrong id that don't exist")
     void getCompanyCouponsTest(){
         Exception error = assertThrows(Exception.class, ()-> {
             adminServiceUnderTest.getCompanyCoupons(WRONG_ID);
@@ -185,7 +185,7 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("GET CUSTOMER COUPONS - throw exception when insert wrong id that don't exist")
+    @DisplayName("throws exception when insert wrong id that don't exist")
     void getCustomerCouponsTest(){
         Exception error = assertThrows(Exception.class, ()-> {
             adminServiceUnderTest.getCustomerCoupons(WRONG_ID);

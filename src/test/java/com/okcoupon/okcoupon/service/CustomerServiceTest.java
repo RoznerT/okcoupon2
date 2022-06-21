@@ -49,7 +49,7 @@ class CustomerServiceTest {
     private final int WRONG_ID = 42;
 
     @Test
-    @DisplayName("LOGIN - throw exception when insert invalid userName and password")
+    @DisplayName("throws exception when insert invalid userName and password")
     void loginTest() {
         Exception error = assertThrows(Exception.class, ()-> {
             customerServiceUnderTest.login("wrongEmail@", "wrongPassword");
@@ -58,7 +58,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    @DisplayName("PURCHASE COUPON 1 - throw exception when insert wrong id to purchase coupon")
+    @DisplayName("throws exception when insert wrong id to purchase coupon")
     void purchaseCouponTest1(){
         Exception error = assertThrows(Exception.class, ()-> {
             customerServiceUnderTest.purchaseCoupon(customerUnderTest,WRONG_ID);
@@ -68,7 +68,7 @@ class CustomerServiceTest {
 
 
     @Test
-    @DisplayName("PURCHASE COUPON 2 - throw exception when insert coupon_id that expired")
+    @DisplayName("throws exception when insert coupon_id that expired")
     void purchaseCouponTest2(){
         Exception error = assertThrows(Exception.class, ()-> {
             Coupon couponExpired = couponRepo.getByTitle("mcdonald's").get(0);
@@ -80,7 +80,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    @DisplayName("PURCHASE COUPON 3 - throw exception when insert coupon_id that out of stash")
+    @DisplayName("throws exception when insert coupon_id that out of stash")
     void purchaseCouponTest3(){
         Exception error = assertThrows(Exception.class, ()-> {
             customerServiceUnderTest.purchaseCoupon(customerUnderTest , couponRepo.getByTitle("macBook Air m1").get(0).getId());
@@ -89,7 +89,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    @DisplayName("PURCHASE COUPON 4 - throw exception when insert coupon_id that customer already bought before")
+    @DisplayName("throws exception when insert coupon_id that customer already bought before")
     void purchaseCouponTest4(){
         this.customerUnderTest.setPurchases(purchaseRepo.getByCustomerId(2));
         Exception error = assertThrows(Exception.class, ()-> {
@@ -99,7 +99,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    @DisplayName("GET CUSTOMER COUPONS - throw exception when insert customer_id with no purchases" )
+    @DisplayName("throws exception when insert customer_id with no purchases" )
     void getCustomerCouponsTest() {
         Exception error = assertThrows(Exception.class, ()-> {
             customerServiceUnderTest.getCustomerCoupons(CUSTOMER_NO_PURCHASE);
@@ -108,7 +108,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    @DisplayName("GET CUSTOMER COUPONS BY CATEGORY 1 - throw exception when insert non-match category" )
+    @DisplayName("throws exception when insert non-match category" )
     void getCustomerCouponsByCategoryTest1() {
         Exception error = assertThrows(Exception.class, ()-> {
             customerServiceUnderTest.getCustomerCouponsByCategory(customerUnderTest.getId(),Category.RESTAURANT);
@@ -117,7 +117,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    @DisplayName("GET CUSTOMER COUPONS BY CATEGORY 2 - throw exception when no coupons for this customer" )
+    @DisplayName("throws exception when no coupons for this customer" )
     void getCustomerCouponsByCategoryTest2() {
         Exception error = assertThrows(Exception.class, ()-> {
             customerServiceUnderTest.getCustomerCouponsByCategory(zeevNoCoupons.getId(),Category.RESTAURANT);
@@ -126,7 +126,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    @DisplayName("GET CUSTOMER COUPONS BY PRICE TEST 1 - throw exception when insert non-match number" )
+    @DisplayName("throws exception when insert non-match number" )
     void getCustomerCouponsByPriceTest1() {
         Exception error = assertThrows(Exception.class, ()-> {
             customerServiceUnderTest.getCustomerCouponsByPrice(customerUnderTest.getId(),0);
@@ -135,7 +135,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    @DisplayName("GET CUSTOMER COUPONS BY PRICE TEST 2 - throw exception when insert non-match number" )
+    @DisplayName("throws exception when insert non-match number" )
     void getCustomerCouponsByPriceTest2() {
         Exception error = assertThrows(Exception.class, ()-> {
             customerServiceUnderTest.getCustomerCouponsByPrice(zeevNoCoupons.getId(),9);
@@ -144,7 +144,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    @DisplayName("GET CUSTOMER DETAILS TEST - throw exception when insert wrong id that don't exist")
+    @DisplayName("throws exception when insert wrong id that don't exist")
     void getOneCustomerTest(){
         Exception error = assertThrows(Exception.class, ()-> {
             customerServiceUnderTest.getCustomerDetails(WRONG_ID);

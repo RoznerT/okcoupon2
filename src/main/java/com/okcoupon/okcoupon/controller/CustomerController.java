@@ -27,7 +27,7 @@ public class CustomerController extends ClientController {
     @Autowired
     JWT jwt;
 
-    private static final String HEADER = "Authorization: Bearer";
+    private static final String HEADER = "Authorization";
 
     /**
      * Post-Method that indicated if the user that try to log in has the permission to use the system

@@ -19,7 +19,7 @@ public class CouponSystemAdvise {
     @ExceptionHandler(value = {InvalidUserException.class})
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
     public ErrorDetail invalidUserMessage() {
-        return new ErrorDetail("Invalid user! ", "Invalid user details! please try again or call your administrator");
+        return new ErrorDetail("Invalid user! ", "please try again or call your administrator");
     }
 
     /**

@@ -55,6 +55,7 @@ class CompanyServiceTest {
             .image(":)))")
             .amount(0)
             .company(companyUnderTest)
+            .companyName(companyUnderTest.getName())
             .build();
 
     private final int COMPANY_NO_COUPONS = 6;
@@ -62,7 +63,7 @@ class CompanyServiceTest {
     private final int WRONG_ID = 42;
 
     @Test
-    @DisplayName("LOGIN - throw exception when insert invalid userName and password")
+    @DisplayName("throws exception when insert invalid userName and password")
     void loginTest() {
         Exception error = assertThrows(Exception.class, ()-> {
             companyServiceUnderTest.login("wrongEmail@", "wrongPassword");
@@ -71,7 +72,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("ADD COUPON 1 - when company already exist")
+    @DisplayName("throws exception when company already exist")
     void addCouponTest1() {
         Exception error = assertThrows(Exception.class, ()-> {
             companyServiceUnderTest.addCoupon(couponRepo.getById(1));
@@ -80,7 +81,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("ADD COUPON 2 - when coupon expiration date has passed")
+    @DisplayName("throws exception when coupon expiration date has passed")
     void addCouponTest2() {
         Exception error = assertThrows(Exception.class, ()-> {
             companyServiceUnderTest.addCoupon(expiredNewCoupon);
@@ -89,7 +90,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("UPDATE COUPON - throw exception when try to update company's name")
+    @DisplayName("throws exception throw exception when try to update company's name")
     void updateCouponTest() {
         Exception error = assertThrows(Exception.class, ()-> {
             companyServiceUnderTest.updateCoupon(new Coupon()); // no id obtained = 0;
@@ -98,7 +99,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("DELETE COUPON - when insert wrong id that don't exist")
+    @DisplayName("throws exception when insert wrong id that don't exist")
     void deleteCouponTest() {
         Exception error = assertThrows(Exception.class, ()-> {
             companyServiceUnderTest.deleteCoupon(WRONG_ID);
@@ -107,7 +108,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("GET COMPANY COUPONS 1- throw exception when insert wrong id that don't exist")
+    @DisplayName("throws exception when insert wrong id that don't exist")
     void getCompanyCouponsTest() {
         Exception error = assertThrows(Exception.class, ()-> {
             companyServiceUnderTest.getCompanyCoupons(WRONG_ID);
@@ -116,7 +117,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("GET COMPANY COUPONS 2- throw exception when insert company with no coupons")
+    @DisplayName("throws exception when insert company with no coupons")
     void getCompanyCouponsTest2() {
         companyRepo.save(companyNoCoupons);
         Exception error = assertThrows(Exception.class, ()-> {
@@ -128,7 +129,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("GET ONE COUPON - throw exception when insert wrong id that don't exist")
+    @DisplayName("throws exception when insert wrong id that don't exist")
     void getOneCouponTest() {
         Exception error = assertThrows(Exception.class, ()-> {
             companyServiceUnderTest.getOneCoupon(WRONG_ID);
@@ -137,7 +138,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("GET COMPANY COUPONS BY CATEGORY 1 - throw exception when insert non-match category" )
+    @DisplayName("throws exception when insert non-match category" )
     void getCouponByCategoryTest() {
         Exception error = assertThrows(Exception.class, ()-> {
             companyServiceUnderTest.getCouponByCategory(companyUnderTest.getId(), Category.DOGFOOD);
@@ -146,7 +147,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("GET COMPANY COUPONS BY CATEGORY 2 - throw exception when insert company with no coupons" )
+    @DisplayName("throws exception when insert company with no coupons" )
     void getCustomerCouponsByCategoryTest2() {
         Exception error = assertThrows(Exception.class, ()-> {
             companyRepo.saveAndFlush(companyNoCoupons);
@@ -157,7 +158,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("GET COMPANY COUPONS BY PRICE TEST 1 - throw exception when insert non-match number" )
+    @DisplayName("throws exception when insert non-match number" )
     void getCouponByMaxPriceTest1() {
         Exception error = assertThrows(Exception.class, ()-> {
             companyServiceUnderTest.getCouponByMaxPrice(companyUnderTest.getId(),1);
@@ -166,7 +167,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("GET COMPANY COUPONS BY PRICE TEST 2 - throw exception when insert company with no coupons" )
+    @DisplayName("throws exception when insert company with no coupons" )
     void getCompanyCouponsByPriceTest2() {
         Exception error = assertThrows(Exception.class, ()-> {
             companyRepo.saveAndFlush(companyNoCoupons);
@@ -177,7 +178,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("GET COMPANY DETAILS TEST - throw exception when insert wrong id that don't exist")
+    @DisplayName("throws exception when insert wrong id that don't exist")
     void getCompanyDetailsTest() {
         Exception error = assertThrows(Exception.class, ()-> {
             companyServiceUnderTest.getCompanyDetails(WRONG_ID);

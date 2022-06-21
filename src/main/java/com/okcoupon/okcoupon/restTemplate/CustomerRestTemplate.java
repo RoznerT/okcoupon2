@@ -30,8 +30,7 @@ public class CustomerRestTemplate implements CommandLineRunner {
 
     private String token;
 
-    private static final String HEADER_SET = "Authorization : Bearer";
-    private static final String HEADER_RES = "Authorization";
+    private static final String HEADER = "Authorization";
 
     private final static String login = "http://localhost:8080/customer/Login";
     private final static String newPurchase = "http://localhost:8080/customer/newPurchase/{couponId}";
@@ -44,7 +43,7 @@ public class CustomerRestTemplate implements CommandLineRunner {
     private HttpEntity<?> getHttpEntity(String token, Object couponOrCustomer) {
         HttpEntity<?> httpEntity;
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HEADER_SET, this.token);
+        httpHeaders.set(HEADER, this.token);
         if (couponOrCustomer instanceof Coupon || couponOrCustomer instanceof Customer) {
             httpEntity = new HttpEntity<>(couponOrCustomer, httpHeaders);
         } else httpEntity = new HttpEntity<>(httpHeaders);
@@ -52,9 +51,9 @@ public class CustomerRestTemplate implements CommandLineRunner {
     }
 
     private void updateToken(ResponseEntity<?> responseEntity) {
-        String responseTokenHeader = responseEntity.getHeaders().getFirst(HEADER_RES);
-        if (responseTokenHeader != null && responseTokenHeader.startsWith("Bearer")) {
-            this.token = responseTokenHeader.substring(8,219);
+        String responseTokenHeader = responseEntity.getHeaders().getFirst(HEADER);
+        if (responseTokenHeader != null ) {
+            this.token = responseTokenHeader;
         }
     }
 
