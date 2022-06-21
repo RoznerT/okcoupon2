@@ -65,6 +65,7 @@ public class GuestRestTemplate implements CommandLineRunner {
     private void register(Customer customer) {
         ResponseEntity<?> response = restTemplate.postForEntity(register, customer, void.class);
         System.out.println(ConsoleColors.GREEN_BRIGHT + "---------------------HELLO GUEST----------------\n" + customer + " register through restTemplate");
+        System.out.print(ConsoleColors.RESET);
 
     }
 

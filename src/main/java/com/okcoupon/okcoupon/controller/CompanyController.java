@@ -144,12 +144,14 @@ public class CompanyController extends ClientController {
      * @throws JWTexpiredException thrown when the Token has expired
      * @throws UncompletedFieldsException thrown when passed coupon-object that missing some part/field
      * @throws UnknownCategoryException thrown when passed coupon-object with unKnown Category that doesn't exist
+     * @throws  CompanyNameMismatchException thrown when sends an invalid-company-name
      */
     @PostMapping("/newCoupon")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> addCoupon(@RequestHeader(name = HEADER) String token, @RequestBody Coupon coupon) throws
             DuplicateItemException, ExpiredCouponException, InvalidUserException, NotFoundException, JWTexpiredException, UncompletedFieldsException, UnknownCategoryException, CompanyNameMismatchException {
         coupon.setCompany(companyService.getCompanyDetails(validation(token).getId()));
+        coupon.setCompanyName(coupon.getCompany().getName());
         if (coupon.unCompleteFields()){
             throw new UncompletedFieldsException();
         }
@@ -175,19 +177,19 @@ public class CompanyController extends ClientController {
      * @throws NoPermissionException thrown when company try to update other company's coupon
      * @throws UncompletedFieldsException thrown when passed coupon-object that missing some part/field
      * @throws UnknownCategoryException thrown when passed coupon-object with unKnown Category that doesn't exist
+     * @throws CompanyNameMismatchException thrown when sends an invalid-company-name
+     *
      */
     @PutMapping("/updateCoupon")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> updateCoupon(@RequestHeader(name = HEADER) String token, @RequestBody Coupon coupon) throws InvalidUserException, CouponNotFoundException, NotFoundException, JWTexpiredException, NoPermissionException, UncompletedFieldsException, UnknownCategoryException, UpdateNameException, CompanyNameMismatchException {
+    public ResponseEntity<?> updateCoupon(@RequestHeader(name = HEADER) String token, @RequestBody Coupon coupon) throws InvalidUserException, CouponNotFoundException, NotFoundException, JWTexpiredException, NoPermissionException, UncompletedFieldsException, UnknownCategoryException, CompanyNameMismatchException {
         if (validation(token).getId() != companyService.getOneCoupon(coupon.getId()).getCompany().getId()) {
             throw new NoPermissionException();
         }
         coupon.setCompany(companyService.getCompanyDetails(validation(token).getId()));
+        coupon.setCompanyName(coupon.getCompany().getName());
         if (coupon.unCompleteFields()){
             throw new UncompletedFieldsException();
-        }
-        if (!coupon.getCompanyName().equalsIgnoreCase(companyService.getOneCoupon(coupon.getId()).getCompanyName())){
-            throw new UpdateNameException();
         }
         if (coupon.validCategory()){
             throw new UnknownCategoryException();

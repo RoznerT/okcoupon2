@@ -54,13 +54,8 @@ public class JWT {
                 .compact();
     }
 
-    //generate key
-    //we need user email, password and role (תפקיד) for create a token
-    //since the userDetail is an instance of class, we need to make it hashcode
-    //the token need to get claims, which is the information of the hashcode
-
     /**
-     * public method that in-use to creates the Claims & Subject to forward creates the Token
+     * public method that in-use to creates the Claims Subject to forward creates the Token
      * @param userDetails unique details for each Client, holds the User-id, User-Password, User-Role
      *                    and the User-Name which is the email and the subject
      * @return Maximum 256-byte unique JWT Token (String type)
@@ -126,7 +121,7 @@ public class JWT {
      * Method that invoked when need to validate the token,
      * using the extractClaims-method and expiredToken-method
      * @param token Maximum 256-byte unique JWT Token (String type)
-     * @return object, an instance of UserDetails.Class initialized by the claims & subject from the Token
+     * @return object, an instance of UserDetails.Class initialized by the claims subject from the Token
      * @throws JWTexpiredException thrown when the Token has expired
      */
     public UserDetails validateToken(String token) throws JWTexpiredException {

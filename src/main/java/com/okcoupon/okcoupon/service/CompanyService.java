@@ -49,6 +49,7 @@ public class CompanyService {
      *
      * @throws DuplicateItemException thrown when user try to add coupon that already exists in the system
      * @throws ExpiredCouponException thrown when the coupon Expiration Date has passed
+     * @throws  CompanyNameMismatchException thrown when sends an invalid-company-name
      */
     public void addCoupon(Coupon coupon) throws DuplicateItemException, ExpiredCouponException, CompanyNameMismatchException {
         if (!couponRepo.existsByTitleAndCompanyId(coupon.getTitle(), coupon.getCompany().getId())) {
@@ -64,6 +65,7 @@ public class CompanyService {
      * Method that called when the user want to update an exists coupon
      * @param coupon instance of Coupon which holds all the details that coupon should have
      * @throws CouponNotFoundException thrown when user sends an invalid-coupon-id that doesn't exist in the system
+     * @throws  CompanyNameMismatchException thrown when sends an invalid-company-name
      */
     public void updateCoupon(Coupon coupon) throws CouponNotFoundException, CompanyNameMismatchException {
         if (couponRepo.existsById(coupon.getId())) {

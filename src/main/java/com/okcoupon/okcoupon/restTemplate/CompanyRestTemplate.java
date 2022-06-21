@@ -176,7 +176,7 @@ public class CompanyRestTemplate implements CommandLineRunner {
 
         try {
             Coupon coupon1 = allCoupons().stream().findFirst().get();
-            coupon1.setTitle("work porfavor!!!!!");
+            coupon1.setTitle("air pods for you");
             coupon1.setDescription("change change");
             updateCoupon(coupon1);
 

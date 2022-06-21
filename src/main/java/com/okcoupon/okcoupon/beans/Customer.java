@@ -62,6 +62,7 @@ public class Customer {
 
     /**
      * Public method to set the ID of the Customer
+     * @param id id to set
      */
     public void setId(int id) {
         this.id = id;
@@ -93,6 +94,7 @@ public class Customer {
 
     /**
      * Private method to set the first name of the this.Customer
+     * @param firstName first name to set
      */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -108,6 +110,7 @@ public class Customer {
 
     /**
      * Private method to set the last name of the this.Customer
+     * @param lastName lase name to set
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
@@ -115,6 +118,7 @@ public class Customer {
 
     /**
      * Public method to set the purchase of the Customer
+     * @param purchases purchases to set
      */
     public void setPurchases(Set<Purchase> purchases) {
         this.purchases = purchases;
@@ -151,7 +155,7 @@ public class Customer {
 
     /**
      * Public method that compares the one given Object to the Other, based on the data/content of them
-     * @param
+     * @param o o other object to compare
      * @return true if the two objects are the same; false if the two objects are not the same
      */
     @Override
@@ -173,7 +177,7 @@ public class Customer {
 
     /**
      * Public methode that returns the value of this.Company given in String format
-     * @return
+     * @return String of the object fields and values
      */
     @Override
     public String toString() {

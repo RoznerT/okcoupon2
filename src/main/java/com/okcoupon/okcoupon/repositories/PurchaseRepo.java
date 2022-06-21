@@ -33,7 +33,7 @@ public interface PurchaseRepo extends JpaRepository<Purchase, Integer> {
      * send a query to the dataBase and checks if exists a record in Purchase_History.Table
      * with the couponId the user send as a parameter
      * @param couponId Integer value perform the id of the coupon which is the Generated-key of coupon
-     * @return
+     * @return true if the purchase exist, false if not
      */
     boolean existsByCouponId(int couponId);
 

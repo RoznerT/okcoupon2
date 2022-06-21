@@ -50,7 +50,7 @@ public class GuestController {
     /**
      * Post-method (CREATE) that called when the user want to register as a new customer to the system
      * @param customer instance of Customer which holds all the details that customer should have
-     * @return ResponseEntity with  HttpStatus which is 201-CREATED
+     *        return with HttpStatus which is 201-CREATED
      * @throws DuplicateItemException thrown when user try to add customer that already exists in the system
      * @throws UncompletedFieldsException thrown when passed customer-object that missing some part/field
      */

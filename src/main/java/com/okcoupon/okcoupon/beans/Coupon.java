@@ -30,33 +30,23 @@ public class Coupon {
     @ManyToOne
     @JsonIgnore
     Company company;
-    @JsonView(Views.Internal.class)
     @Column(nullable = false, length= 40)
-    @JsonIgnore
     private String companyName;
     @Column(nullable = false, length = 40)
-    @JsonView(Views.Public.class)
     private Category category;
     @Column(nullable = false, length = 45)
-    @JsonView(Views.Public.class)
     private String title;
     @Column(nullable = false, length = 45)
-    @JsonView(Views.Public.class)
     private String description;
     @Column(nullable = false)
-    @JsonView(Views.Public.class)
     private Date startDate;
-    @JsonView(Views.Public.class)
     @Column(nullable = false)
     private Date endDate;
     @Column(nullable = false)
-    @JsonView(Views.Public.class)
     private int amount;
     @Column(nullable = false)
-    @JsonView(Views.Public.class)
     private double price;
     @Column(nullable = false)
-    @JsonView(Views.Public.class)
     private String image;
     @JsonIgnore
     @OneToMany(mappedBy = "coupon", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
@@ -133,6 +123,7 @@ public class Coupon {
 
     /**
      * Public method to set the ID of the coupon
+     * @param id the id of the coupon to set
      */
     public void setId(int id) {
         this.id = id;
@@ -149,6 +140,7 @@ public class Coupon {
 
     /**
      * Public method to set the company of the coupon
+     * @param company company to set
      */
     public void setCompany(Company company) {
         this.company = company;
@@ -165,6 +157,7 @@ public class Coupon {
 
     /**
      * Public method to set the category of the coupon
+     * @param category category to set
      */
     public void setCategory(Category category) {
         this.category = category;
@@ -181,6 +174,7 @@ public class Coupon {
 
     /**
      * Public method to set the title of the coupon
+     * @param title title to set
      */
     public void setTitle(String title) {
         this.title = title;
@@ -197,6 +191,7 @@ public class Coupon {
 
     /**
      * Public method to set the title of the description
+     * @param description description to set
      */
     public void setDescription(String description) {
         this.description = description;
@@ -213,6 +208,7 @@ public class Coupon {
 
     /**
      * Public method to set the start date of the coupon
+     * @param startDate set start date
      */
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
@@ -229,6 +225,7 @@ public class Coupon {
 
     /**
      * Public method to set the end date of the coupon
+     * @param endDate end date to set
      */
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
@@ -245,6 +242,7 @@ public class Coupon {
 
     /**
      * Public method to set the purchase of the coupon
+     * @param  purchases purchases to set
      */
     public void setPurchases(Set<Purchase> purchases) {
         this.purchases = purchases;
@@ -252,6 +250,7 @@ public class Coupon {
 
     /**
      * Public method to set the amount of the coupon
+     * @param amount amount to set
      */
     public void setAmount(int amount) {
         this.amount = amount;
@@ -268,6 +267,7 @@ public class Coupon {
 
     /**
      * Public method to set the price of the coupon
+     * @param price price to set
      */
     public void setPrice(double price) {
         this.price = price;
@@ -284,6 +284,7 @@ public class Coupon {
 
     /**
      * Public method to set the image of the coupon
+     * @param image image to set
      */
     public void setImage(String image) {
         this.image = image;
@@ -291,14 +292,16 @@ public class Coupon {
 
     /**
      * Public method to set the purchase of the coupon
+     * @return Set of purchases
      */
     public Set<Purchase> getPurchases() {
         return purchases;
     }
 
-     /**
+
+    /**
      * Public method that compares the one given Object to the Other, based on the data/content of them
-     * @param
+     * @param o other object to compare
      * @return true if the two objects are the same; false if the two objects are not the same
      */
     @Override
@@ -306,7 +309,7 @@ public class Coupon {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Coupon coupon = (Coupon) o;
-        return id == coupon.id && amount == coupon.amount && Double.compare(coupon.price, price) == 0 && Objects.equals(company, coupon.company) && category == coupon.category && Objects.equals(title, coupon.title) && Objects.equals(description, coupon.description) && Objects.equals(startDate, coupon.startDate) && Objects.equals(endDate, coupon.endDate) && Objects.equals(image, coupon.image) && Objects.equals(purchases, coupon.purchases);
+        return id == coupon.id && amount == coupon.amount && Double.compare(coupon.price, price) == 0 && Objects.equals(company, coupon.company) && Objects.equals(companyName, coupon.companyName) && category == coupon.category && Objects.equals(title, coupon.title) && Objects.equals(description, coupon.description) && Objects.equals(startDate, coupon.startDate) && Objects.equals(endDate, coupon.endDate) && Objects.equals(image, coupon.image) && Objects.equals(purchases, coupon.purchases);
     }
 
     /**
@@ -315,10 +318,39 @@ public class Coupon {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, company, category, title, description, startDate, endDate, amount, price, image, purchases);
+        return Objects.hash(id, company, companyName, category, title, description, startDate, endDate, amount, price, image, purchases);
+    }
+
+    @Override
+    public String toString() {
+        return "Coupon{" +
+                "id=" + id +
+                ", companyName='" + companyName + '\'' +
+                ", category=" + category +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", amount=" + amount +
+                ", price=" + price +
+                ", image='" + image +
+                '}';
     }
 
     public void toPrint() {
-        TablePrinter.print(this);
+        TablePrinter.print(Coupon.builder()
+                .id(this.id)
+                .companyName(this.companyName)
+                .title(this.title)
+                .description(this.description)
+                .amount(this.amount)
+                .price(this.price)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
+                .category(this.category)
+                .image("")
+                .purchases(null)
+                .company(null)
+                .build());
     }
 }

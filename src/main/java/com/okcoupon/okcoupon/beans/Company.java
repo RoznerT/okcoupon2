@@ -101,7 +101,7 @@ public class Company {
     }
 
     /**
-     * Public method to set the Collection<Coupons> of the Company
+     * Public method to set the Collection of Coupons of the Company
      * @param coupons Collection of Coupon.Class
      */
     public void setCoupons(Collection<Coupon> coupons) {
@@ -126,8 +126,8 @@ public class Company {
     }
 
     /**
-     * Public method to get the Collection<Coupons> of the Company
-     * @return Collection<Coupons> of the this.Company
+     * Public method to get the Collection of Coupons of the Company
+     * @return Collection of Coupons of the this.Company
      */
     public Collection<Coupon> getCoupons() {
         return coupons;
@@ -135,7 +135,7 @@ public class Company {
 
     /**
      * Public method that compares the one given Object to the Other, based on the data/content of them
-     * @param
+     * @param  o other project to compare
      * @return true if the two objects are the same; false if the two objects are not the same
      */
     @Override
@@ -157,7 +157,7 @@ public class Company {
 
     /**
      * Public methode that returns the value of this.Company given in String format
-     * @return
+     * @return String of the objects fields and values
      */
     @Override
     public String toString() {
